@@ -52,4 +52,22 @@ class FormController extends Controller
 
         return redirect()->route('forms.index')->with('success', 'Formulario creado con éxito.');
     }
+
+    public function show($id)
+    {
+        $form = Form::with('fields')->findOrFail($id);
+        
+        return Inertia::render('Forms/Show', [
+            'form' => $form
+        ]);
+    }
+
+    public function edit($id)
+    {
+        $form = Form::with('fields')->findOrFail($id);
+        
+        return Inertia::render('Forms/Edit', [
+            'form' => $form
+        ]);
+    }
 }

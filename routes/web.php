@@ -27,6 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/forms', [\App\Http\Controllers\FormController::class, 'index'])->name('forms.index');
     Route::get('/forms/create', [\App\Http\Controllers\FormController::class, 'create'])->name('forms.create');
     Route::post('/forms', [\App\Http\Controllers\FormController::class, 'store'])->name('forms.store');
+    Route::get('/forms/{id}', [\App\Http\Controllers\FormController::class, 'show'])->name('forms.show');
+    Route::get('/forms/{id}/edit', [\App\Http\Controllers\FormController::class, 'edit'])->name('forms.edit');
 });
 
 require __DIR__.'/auth.php';
