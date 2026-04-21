@@ -2,16 +2,17 @@ import { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
-import { 
-    LayoutDashboard, 
-    Users, 
-    Menu, 
+import {
+    LayoutDashboard,
+    Users,
+    Menu,
     X,
     Building,
     ClipboardList,
     Settings,
     LogOut,
-    User as UserIcon
+    User as UserIcon,
+    ShieldCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -23,14 +24,16 @@ export default function AuthenticatedLayout({ header, children }) {
         { name: 'Dashboard', href: route('dashboard'), icon: LayoutDashboard, active: route().current('dashboard') },
         { name: 'Miembros', href: '/members', icon: Users, active: route().current('members.*') || window.location.pathname.startsWith('/members') },
         { name: 'Formularios', href: '/forms', icon: ClipboardList, active: route().current('forms.*') || window.location.pathname.startsWith('/forms') },
-        { name: 'Ministerios', href: '#', icon: Building, active: false },
+        { name: 'Ministerios', href: '/ministries', icon: Building, active: route().current('ministries.*') || window.location.pathname.startsWith('/ministries') },
+        { name: 'Usuarios', href: '/users', icon: ShieldCheck, active: route().current('users.*') || window.location.pathname.startsWith('/users') },
+        { name: 'Configuración', href: '/settings', icon: Settings, active: route().current('settings.*') || window.location.pathname.startsWith('/settings') },
     ];
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
             {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
-                <div 
+                <div
                     className="fixed inset-0 z-40 bg-gray-900/80 lg:hidden transition-opacity"
                     onClick={() => setSidebarOpen(false)}
                 />
@@ -49,7 +52,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                 Dash-Ichthys
                             </span>
                         </Link>
-                        <button 
+                        <button
                             className="ml-auto lg:hidden text-gray-500 hover:text-gray-700"
                             onClick={() => setSidebarOpen(false)}
                         >
@@ -66,8 +69,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                     href={item.href}
                                     className={cn(
                                         "group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
-                                        item.active 
-                                            ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400" 
+                                        item.active
+                                            ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400"
                                             : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700/50 dark:hover:text-white"
                                     )}
                                 >

@@ -29,6 +29,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/forms', [\App\Http\Controllers\FormController::class, 'store'])->name('forms.store');
     Route::get('/forms/{id}', [\App\Http\Controllers\FormController::class, 'show'])->name('forms.show');
     Route::get('/forms/{id}/edit', [\App\Http\Controllers\FormController::class, 'edit'])->name('forms.edit');
+
+    Route::get('/ministries', [\App\Http\Controllers\MinistryController::class, 'index'])->name('ministries.index');
+    Route::post('/ministries', [\App\Http\Controllers\MinistryController::class, 'store'])->name('ministries.store');
+
+    Route::get('/settings', [\App\Http\Controllers\TenantSettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [\App\Http\Controllers\TenantSettingController::class, 'update'])->name('settings.update');
+
+    Route::get('/users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+    Route::post('/users', [\App\Http\Controllers\UserController::class, 'store'])->name('users.store');
 });
 
 require __DIR__.'/auth.php';
