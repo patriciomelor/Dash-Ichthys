@@ -1,0 +1,82 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Dash-Ichthys API Documentation",
+        "description": "L5 Swagger API description",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/members": {
+            "get": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Get all members",
+                "operationId": "c5a661e6b95da83488d224a771d3db18",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/api/members/import": {
+            "post": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Import members from Excel",
+                "operationId": "96271962a9b18ae377d5b9b37e25f46d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "description": "Excel file to import",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Import successful"
+                    },
+                    "400": {
+                        "description": "Invalid file"
+                    }
+                }
+            }
+        },
+        "/api/health": {
+            "get": {
+                "tags": [
+                    "System"
+                ],
+                "summary": "API Health Check",
+                "operationId": "5b1a414515fa4e8106e72f6aac552d48",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Members",
+            "description": "Members"
+        },
+        {
+            "name": "System",
+            "description": "System"
+        }
+    ]
+}
