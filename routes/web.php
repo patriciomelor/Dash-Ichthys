@@ -23,7 +23,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/members', [\App\Http\Controllers\MemberController::class, 'index'])->name('members.index');
-    
+    Route::post('/members/import', [\App\Http\Controllers\MemberController::class, 'import'])->name('members.import');
+    Route::get('/members/export-template', [\App\Http\Controllers\MemberController::class, 'exportTemplate'])->name('members.export-template');
+    Route::get('/members/{id}', [\App\Http\Controllers\MemberController::class, 'show'])->name('members.show');
+    Route::post('/members/{id}/comments', [\App\Http\Controllers\MemberController::class, 'addComment'])->name('members.comments.add');
+
     Route::get('/forms', [\App\Http\Controllers\FormController::class, 'index'])->name('forms.index');
     Route::get('/forms/create', [\App\Http\Controllers\FormController::class, 'create'])->name('forms.create');
     Route::post('/forms', [\App\Http\Controllers\FormController::class, 'store'])->name('forms.store');

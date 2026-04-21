@@ -20,6 +20,7 @@ export default function Index({ auth, settings }) {
         church_name: settings.church_name || 'Mi Iglesia',
         primary_color: settings.primary_color || '#4f46e5',
         secondary_color: settings.secondary_color || '#db2777',
+        is_dark_mode: settings.is_dark_mode || false,
     });
 
     useEffect(() => {
@@ -145,6 +146,29 @@ export default function Index({ auth, settings }) {
                                         </div>
                                         <p className="mt-1 text-xs text-gray-500">Usado en acentos y elementos secundarios.</p>
                                         <InputError className="mt-2" message={errors.secondary_color} />
+                                    </div>
+                                    
+                                    <div className="col-span-1 md:col-span-2 pt-4 border-t border-gray-100 dark:border-gray-700">
+                                        <label className="flex items-center space-x-3 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="form-checkbox h-5 w-5 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-900"
+                                                checked={data.is_dark_mode}
+                                                onChange={(e) => {
+                                                    setData('is_dark_mode', e.target.checked);
+                                                    if (e.target.checked) {
+                                                        document.documentElement.classList.add('dark');
+                                                    } else {
+                                                        document.documentElement.classList.remove('dark');
+                                                    }
+                                                }}
+                                            />
+                                            <span className="text-gray-900 dark:text-white font-medium">Forzar Modo Oscuro</span>
+                                        </label>
+                                        <p className="mt-1 ml-8 text-xs text-gray-500">
+                                            Activa esta opción para que el portal siempre se muestre en modo oscuro para todos los usuarios.
+                                        </p>
+                                        <InputError className="mt-2" message={errors.is_dark_mode} />
                                     </div>
                                 </div>
                             </div>

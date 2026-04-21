@@ -37,7 +37,7 @@ export default function Index({ auth, members }) {
         const formData = new FormData();
         formData.append('file', data.file);
 
-        axios.post('/api/members/import', formData, {
+        axios.post('/members/import', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         }).then(response => {
             setImportSuccess(true);
@@ -160,9 +160,17 @@ export default function Index({ auth, members }) {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                                <MoreVertical className="h-5 w-5" />
-                                            </button>
+                                            <div className="flex justify-end gap-2">
+                                                <a 
+                                                    href={`/members/${member.id}`} 
+                                                    className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3"
+                                                >
+                                                    Ver Perfil
+                                                </a>
+                                                <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                                    <MoreVertical className="h-5 w-5" />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
@@ -201,12 +209,17 @@ export default function Index({ auth, members }) {
                     ) : (
                         <form onSubmit={handleImportSubmit} className="space-y-6">
                             <div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                                     Sube un archivo Excel (.xlsx, .csv) con las siguientes columnas: <br/>
                                     <span className="font-mono text-xs bg-gray-100 dark:bg-gray-800 p-1 rounded mt-2 inline-block">
-                                        nombres, apellidos, correo, telefono, direccion, etiqueta
+                                        first_name, last_name, email, phone, landline, address, label
                                     </span>
-                                </p>
+                                    <div className="mt-3">
+                                        <a href="/members/export-template" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline flex items-center gap-1">
+                                            Descargar Plantilla de Ejemplo
+                                        </a>
+                                    </div>
+                                </div>
 
                                 <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                     <div className="space-y-1 text-center">
