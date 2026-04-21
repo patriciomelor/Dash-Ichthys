@@ -11,6 +11,7 @@ import {
     CheckCircle2
 } from 'lucide-react';
 import Modal from '@/Components/Modal';
+import Dropdown from '@/Components/Dropdown';
 import PrimaryButton from '@/Components/PrimaryButton';
 import SecondaryButton from '@/Components/SecondaryButton';
 import { cn } from '@/lib/utils';
@@ -167,9 +168,27 @@ export default function Index({ auth, members }) {
                                                 >
                                                     Ver Perfil
                                                 </a>
-                                                <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                                    <MoreVertical className="h-5 w-5" />
-                                                </button>
+                                                <Dropdown>
+                                                    <Dropdown.Trigger>
+                                                        <span className="inline-flex rounded-md">
+                                                            <button
+                                                                type="button"
+                                                                className="inline-flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                                            >
+                                                                <MoreVertical className="h-5 w-5" />
+                                                            </button>
+                                                        </span>
+                                                    </Dropdown.Trigger>
+
+                                                    <Dropdown.Content align="right" width="48">
+                                                        <Dropdown.Link href={`/members/${member.id}`}>
+                                                            Ver Perfil
+                                                        </Dropdown.Link>
+                                                        <Dropdown.Link href="#" as="button" method="delete" className="text-red-600 hover:text-red-700">
+                                                            Eliminar
+                                                        </Dropdown.Link>
+                                                    </Dropdown.Content>
+                                                </Dropdown>
                                             </div>
                                         </td>
                                     </tr>
