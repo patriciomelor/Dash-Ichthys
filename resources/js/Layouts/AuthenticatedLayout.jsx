@@ -22,7 +22,7 @@ export default function AuthenticatedLayout({ header, children }) {
     const navigation = [
         { name: 'Dashboard', href: route('dashboard'), icon: LayoutDashboard, active: route().current('dashboard') },
         { name: 'Miembros', href: '/members', icon: Users, active: route().current('members.*') || window.location.pathname.startsWith('/members') },
-        { name: 'Formularios', href: '#', icon: ClipboardList, active: false },
+        { name: 'Formularios', href: '/forms', icon: ClipboardList, active: route().current('forms.*') || window.location.pathname.startsWith('/forms') },
         { name: 'Ministerios', href: '#', icon: Building, active: false },
     ];
 
