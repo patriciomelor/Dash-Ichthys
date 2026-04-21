@@ -44,7 +44,7 @@ export default function Show({ auth, member }) {
                     <div className="flex-1">
                         <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
                             <div className="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-sm">
-                                {member.first_name.charAt(0)}{member.last_name.charAt(0)}
+                                {member.first_name?.charAt(0)}{member.last_name ? member.last_name.charAt(0) : ''}
                             </div>
                             {member.first_name} {member.last_name}
                         </h2>

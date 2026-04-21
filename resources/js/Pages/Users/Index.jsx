@@ -67,8 +67,8 @@ export default function Index({ auth, users, roles }) {
         >
             <Head title="Usuarios y Roles" />
 
-            <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-12">
-                <div className="overflow-x-auto">
+            <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 mb-12">
+                <div className="overflow-visible">
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead className="bg-gray-50 dark:bg-gray-900/50">
                             <tr>

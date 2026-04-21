@@ -85,7 +85,7 @@ export default function Index({ auth, members }) {
         >
             <Head title="Miembros" />
 
-            <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700">
                 <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row sm:items-center gap-4">
                     <div className="relative flex-1 max-w-md">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -99,7 +99,7 @@ export default function Index({ auth, members }) {
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
+                <div className="overflow-visible">
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead className="bg-gray-50 dark:bg-gray-900/50">
                             <tr>
@@ -128,7 +128,7 @@ export default function Index({ auth, members }) {
                                             <div className="flex items-center">
                                                 <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
                                                     <span className="text-indigo-600 dark:text-indigo-400 font-medium">
-                                                        {member.first_name.charAt(0)}{member.last_name.charAt(0)}
+                                                        {member.first_name?.charAt(0)}{member.last_name ? member.last_name.charAt(0) : ''}
                                                     </span>
                                                 </div>
                                                 <div className="ml-4">
