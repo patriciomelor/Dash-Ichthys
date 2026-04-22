@@ -18,6 +18,10 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/f/{slug}', [\App\Http\Controllers\PublicFormController::class, 'show'])->name('public.forms.show');
+Route::post('/f/{slug}', [\App\Http\Controllers\PublicFormController::class, 'store'])->name('public.forms.store');
+Route::get('/f/{slug}/success', [\App\Http\Controllers\PublicFormController::class, 'success'])->name('public.forms.success');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
