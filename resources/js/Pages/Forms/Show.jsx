@@ -26,6 +26,12 @@ export default function Show({ auth, form }) {
                         </h2>
                     </div>
                     <div className="flex items-center gap-3">
+                        <button 
+                            onClick={() => navigator.clipboard.writeText(`${window.location.origin}/f/${form.short_url_slug}`)}
+                            className="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition-colors"
+                        >
+                            Copiar Link
+                        </button>
                         <Link href={`/forms/${form.id}/edit`}>
                             <PrimaryButton className="bg-indigo-600 flex items-center gap-2">
                                 <Edit className="h-4 w-4" />

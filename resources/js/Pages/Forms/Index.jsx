@@ -9,6 +9,7 @@ import {
     MessageSquare
 } from 'lucide-react';
 import PrimaryButton from '@/Components/PrimaryButton';
+import Dropdown from '@/Components/Dropdown';
 import { cn } from '@/lib/utils';
 import dayjs from 'dayjs';
 
@@ -62,9 +63,27 @@ export default function Index({ auth, forms }) {
                                     <div className="h-10 w-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center">
                                         <ClipboardList className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                     </div>
-                                    <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                        <MoreVertical className="h-5 w-5" />
-                                    </button>
+                                    <Dropdown>
+                                        <Dropdown.Trigger>
+                                            <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                                <MoreVertical className="h-5 w-5" />
+                                            </button>
+                                        </Dropdown.Trigger>
+                                        <Dropdown.Content align="right" width="48">
+                                            <Dropdown.Link href={`/forms/${form.id}`}>
+                                                Ver Detalles
+                                            </Dropdown.Link>
+                                            <Dropdown.Link href={`/forms/${form.id}/edit`}>
+                                                Editar Formulario
+                                            </Dropdown.Link>
+                                            <Dropdown.Link 
+                                                as="button" 
+                                                onClick={() => navigator.clipboard.writeText(`${window.location.origin}/f/${form.short_url_slug}`)}
+                                            >
+                                                Copiar Shortlink
+                                            </Dropdown.Link>
+                                        </Dropdown.Content>
+                                    </Dropdown>
                                 </div>
                                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                                     <Link href={`/forms/${form.id}`}>
