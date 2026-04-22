@@ -8,6 +8,7 @@ class Ministry extends Model
 {
     protected $fillable = [
         'name',
+        'description',
         'color_hex',
     ];
 

@@ -21,20 +21,30 @@ import { cn } from '@/lib/utils';
 export default function Index({ auth, ministries }) {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, put, processing, errors, reset } = useForm({
         name: '',
         description: '',
-        color: '#4f46e5'
+        color: '#4f46e5',
+        id: null
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('ministries.store'), {
-            onSuccess: () => {
-                closeModal();
-                router.reload();
-            }
-        });
+        if (data.id) {
+            put(route('ministries.update', data.id), {
+                onSuccess: () => {
+                    closeModal();
+                    router.reload();
+                }
+            });
+        } else {
+            post(route('ministries.store'), {
+                onSuccess: () => {
+                    closeModal();
+                    router.reload();
+                }
+            });
+        }
     };
 
     const closeModal = () => {
@@ -69,12 +79,12 @@ export default function Index({ auth, ministries }) {
                 {ministries.length > 0 ? (
                     ministries.map((ministry) => (
                         <div key={ministry.id} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all group overflow-hidden flex flex-col">
-                            <div className="h-2 w-full" style={{ backgroundColor: ministry.color || '#4f46e5' }}></div>
+                            <div className="h-2 w-full" style={{ backgroundColor: ministry.color_hex || '#4f46e5' }}></div>
                             <div className="p-5 flex-1 flex flex-col">
                                 <div className="flex justify-between items-start mb-4">
                                     <div 
                                         className="h-12 w-12 rounded-xl flex items-center justify-center bg-opacity-10 dark:bg-opacity-20"
-                                        style={{ backgroundColor: `${ministry.color}20`, color: ministry.color }}
+                                        style={{ backgroundColor: `${ministry.color_hex}20`, color: ministry.color_hex }}
                                     >
                                         <Building className="h-6 w-6" />
                                     </div>
@@ -88,10 +98,26 @@ export default function Index({ auth, ministries }) {
                                         </Dropdown.Trigger>
 
                                         <Dropdown.Content align="right" width="48">
-                                            <Dropdown.Link href="#" as="button">
+                                            <Dropdown.Link 
+                                                as="button" 
+                                                onClick={() => {
+                                                    setData({
+                                                        name: ministry.name,
+                                                        description: ministry.description || '',
+                                                        color: ministry.color_hex || '#4f46e5',
+                                                        id: ministry.id
+                                                    });
+                                                    setIsCreateModalOpen(true);
+                                                }}
+                                            >
                                                 Editar Ministerio
                                             </Dropdown.Link>
-                                            <Dropdown.Link href="#" as="button" method="delete" className="text-red-600 hover:text-red-700">
+                                            <Dropdown.Link 
+                                                href={`/ministries/${ministry.id}`} 
+                                                as="button" 
+                                                method="delete" 
+                                                className="text-red-600 hover:text-red-700"
+                                            >
                                                 Eliminar
                                             </Dropdown.Link>
                                         </Dropdown.Content>
@@ -99,7 +125,9 @@ export default function Index({ auth, ministries }) {
                                 </div>
                                 
                                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                                    {ministry.name}
+                                    <Link href={`/ministries/${ministry.id}`} className="hover:text-indigo-600 dark:hover:text-indigo-400">
+                                        {ministry.name}
+                                    </Link>
                                 </h3>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 flex-1 line-clamp-3">
                                     {ministry.description || 'Sin descripción.'}
@@ -110,9 +138,12 @@ export default function Index({ auth, ministries }) {
                                         <Users className="h-4 w-4 mr-2 text-gray-400" />
                                         {ministry.members_count || 0} Integrantes
                                     </div>
-                                    <button className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium transition-colors">
+                                    <Link 
+                                        href={`/ministries/${ministry.id}`}
+                                        className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium transition-colors"
+                                    >
                                         Gestionar
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

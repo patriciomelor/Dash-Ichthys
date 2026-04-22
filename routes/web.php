@@ -40,6 +40,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/ministries', [\App\Http\Controllers\MinistryController::class, 'index'])->name('ministries.index');
     Route::post('/ministries', [\App\Http\Controllers\MinistryController::class, 'store'])->name('ministries.store');
+    Route::get('/ministries/{id}', [\App\Http\Controllers\MinistryController::class, 'show'])->name('ministries.show');
+    Route::put('/ministries/{id}', [\App\Http\Controllers\MinistryController::class, 'update'])->name('ministries.update');
+    Route::delete('/ministries/{id}', [\App\Http\Controllers\MinistryController::class, 'destroy'])->name('ministries.destroy');
+    Route::post('/ministries/{id}/members', [\App\Http\Controllers\MinistryController::class, 'addMember'])->name('ministries.members.add');
+    Route::delete('/ministries/{id}/members/{member_id}', [\App\Http\Controllers\MinistryController::class, 'removeMember'])->name('ministries.members.remove');
 
     Route::get('/settings', [\App\Http\Controllers\TenantSettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [\App\Http\Controllers\TenantSettingController::class, 'update'])->name('settings.update');
