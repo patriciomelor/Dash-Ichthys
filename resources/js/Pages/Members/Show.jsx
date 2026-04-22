@@ -14,12 +14,17 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import dayjs from 'dayjs';
-import 'dayjs/locale/es';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { cn } from '@/lib/utils';
 
-dayjs.extend(relativeTime);
-dayjs.locale('es');
+try {
+    dayjs.extend(relativeTime.default || relativeTime);
+    import('dayjs/locale/es').then(() => {
+        dayjs.locale('es');
+    }).catch(e => console.error('Error loading locale', e));
+} catch (e) {
+    console.error('Error extending dayjs', e);
+}
 
 export default function Show({ auth, member }) {
     const { data, setData, post, processing, errors, reset } = useForm({
