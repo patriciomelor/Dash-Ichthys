@@ -128,7 +128,7 @@ export default function Index({ auth, members }) {
                                             <div className="flex items-center">
                                                 <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
                                                     <span className="text-indigo-600 dark:text-indigo-400 font-medium">
-                                                        {member.first_name?.charAt(0)}{member.last_name ? member.last_name.charAt(0) : ''}
+                                                        {String(member.first_name || '').charAt(0)}{String(member.last_name || '').charAt(0)}
                                                     </span>
                                                 </div>
                                                 <div className="ml-4">

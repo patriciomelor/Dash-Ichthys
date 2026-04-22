@@ -44,7 +44,7 @@ export default function Show({ auth, member }) {
                     <div className="flex-1">
                         <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
                             <div className="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-sm">
-                                {member.first_name?.charAt(0)}{member.last_name ? member.last_name.charAt(0) : ''}
+                                {String(member.first_name || '').charAt(0)}{String(member.last_name || '').charAt(0)}
                             </div>
                             {member.first_name} {member.last_name}
                         </h2>
@@ -56,7 +56,7 @@ export default function Show({ auth, member }) {
                             member.label === 'asistente_regular' ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
                             "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
                         )}>
-                            {member.label.replace('_', ' ')}
+                            {String(member.label || 'visita').replace('_', ' ')}
                         </span>
                     </div>
                 </div>
@@ -135,7 +135,7 @@ export default function Show({ auth, member }) {
                                         <div key={comment.id} className="flex gap-4">
                                             <div className="flex-shrink-0">
                                                 <div className="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-medium">
-                                                    {comment.user?.name?.charAt(0) || 'U'}
+                                                    {String(comment.user?.name || 'U').charAt(0)}
                                                 </div>
                                             </div>
                                             <div className="flex-1 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl rounded-tl-none p-4 shadow-sm">
