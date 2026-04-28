@@ -19,8 +19,10 @@ import { cn } from '@/lib/utils';
 
 export default function Index({ auth, users, roles, tags }) {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
         name: '',
         email: '',
         password: '',
@@ -38,9 +40,40 @@ export default function Index({ auth, users, roles, tags }) {
         });
     };
 
+    const handleEditSubmit = (e) => {
+        e.preventDefault();
+        put(route('users.update', editingUser.id), {
+            onSuccess: () => {
+                closeEditModal();
+                router.reload();
+            }
+        });
+    };
+
+    const openEditModal = (user) => {
+        setEditingUser(user);
+        setData({
+            name: user.name,
+            email: user.email,
+            password: '',
+            password_confirmation: '',
+            role: user.roles && user.roles.length > 0 ? user.roles[0].name : 'colaborador'
+        });
+        clearErrors();
+        setIsEditModalOpen(true);
+    };
+
     const closeModal = () => {
         setIsCreateModalOpen(false);
         reset();
+        clearErrors();
+    };
+
+    const closeEditModal = () => {
+        setIsEditModalOpen(false);
+        setEditingUser(null);
+        reset();
+        clearErrors();
     };
 
     return (
@@ -140,10 +173,10 @@ export default function Index({ auth, users, roles, tags }) {
                                                 </Dropdown.Trigger>
 
                                                 <Dropdown.Content align="right" width="48">
-                                                    <Dropdown.Link href="#" as="button">
+                                                    <Dropdown.Link href="#" as="button" onClick={() => openEditModal(user)}>
                                                         Editar Usuario
                                                     </Dropdown.Link>
-                                                    <Dropdown.Link href="#" as="button" method="delete" className="text-red-600 hover:text-red-700">
+                                                    <Dropdown.Link href={route('users.destroy', user.id)} as="button" method="delete" className="text-red-600 hover:text-red-700">
                                                         Eliminar
                                                     </Dropdown.Link>
                                                 </Dropdown.Content>
@@ -250,6 +283,101 @@ export default function Index({ auth, users, roles, tags }) {
                             <SecondaryButton onClick={closeModal}>Cancelar</SecondaryButton>
                             <PrimaryButton disabled={processing}>
                                 Crear Usuario
+                            </PrimaryButton>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
+
+            {/* Edit Modal */}
+            <Modal show={isEditModalOpen} onClose={closeEditModal} maxWidth="md">
+                <div className="p-6">
+                    <div className="flex justify-between items-center mb-5">
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                            <Users className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                            Editar Usuario
+                        </h2>
+                        <button onClick={closeEditModal} className="text-gray-400 hover:text-gray-500 transition-colors">
+                            <X className="h-5 w-5" />
+                        </button>
+                    </div>
+
+                    <form onSubmit={handleEditSubmit} className="space-y-4">
+                        <div>
+                            <InputLabel htmlFor="edit_name" value="Nombre Completo" />
+                            <TextInput
+                                id="edit_name"
+                                type="text"
+                                className="mt-1 block w-full"
+                                value={data.name}
+                                onChange={(e) => setData('name', e.target.value)}
+                                required
+                            />
+                            <InputError message={errors.name} className="mt-2" />
+                        </div>
+
+                        <div>
+                            <InputLabel htmlFor="edit_email" value="Correo Electrónico" />
+                            <TextInput
+                                id="edit_email"
+                                type="email"
+                                className="mt-1 block w-full"
+                                value={data.email}
+                                onChange={(e) => setData('email', e.target.value)}
+                                required
+                            />
+                            <InputError message={errors.email} className="mt-2" />
+                        </div>
+
+                        <div>
+                            <InputLabel htmlFor="edit_role" value="Rol en el Sistema" />
+                            <select
+                                id="edit_role"
+                                className="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm uppercase text-sm"
+                                value={data.role}
+                                onChange={(e) => setData('role', e.target.value)}
+                            >
+                                {roles.map(role => (
+                                    <option key={role.id} value={role.name}>{role.name}</option>
+                                ))}
+                            </select>
+                            <InputError message={errors.role} className="mt-2" />
+                        </div>
+
+                        <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800/50 mt-4">
+                            <p className="text-xs text-yellow-800 dark:text-yellow-300 font-medium mb-3">
+                                Deja los campos de contraseña en blanco si no deseas cambiarla.
+                            </p>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <InputLabel htmlFor="edit_password" value="Nueva Contraseña" />
+                                    <TextInput
+                                        id="edit_password"
+                                        type="password"
+                                        className="mt-1 block w-full"
+                                        value={data.password}
+                                        onChange={(e) => setData('password', e.target.value)}
+                                    />
+                                    <InputError message={errors.password} className="mt-2" />
+                                </div>
+
+                                <div>
+                                    <InputLabel htmlFor="edit_password_confirmation" value="Confirmar Nueva" />
+                                    <TextInput
+                                        id="edit_password_confirmation"
+                                        type="password"
+                                        className="mt-1 block w-full"
+                                        value={data.password_confirmation}
+                                        onChange={(e) => setData('password_confirmation', e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700 mt-6">
+                            <SecondaryButton onClick={closeEditModal}>Cancelar</SecondaryButton>
+                            <PrimaryButton disabled={processing}>
+                                Guardar Cambios
                             </PrimaryButton>
                         </div>
                     </form>
