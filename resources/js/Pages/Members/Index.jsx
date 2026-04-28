@@ -249,8 +249,8 @@ export default function Index({ auth, members }) {
                             <div>
                                 <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                                     Sube un archivo Excel (.xlsx, .csv) con las siguientes columnas: <br/>
-                                    <span className="font-mono text-xs bg-gray-100 dark:bg-gray-800 p-1 rounded mt-2 inline-block">
-                                        first_name, last_name, email, phone, landline, address, label
+                                    <span className="font-mono text-[10px] bg-gray-100 dark:bg-gray-800 p-2 rounded mt-2 block break-words border border-gray-200 dark:border-gray-700 leading-relaxed text-gray-700 dark:text-gray-300">
+                                        first_name, last_name, email, phone, landline, address, label, birth_date, conversion_date, baptism_date, marriage_date, class_connect_1_date, class_grow_2_date, class_equip_date, membership_date, membership_cessation_date, reinstatement_date, is_deceased, death_date
                                     </span>
                                     <div className="mt-3">
                                         <a href="/members/export-template" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline flex items-center gap-1">
