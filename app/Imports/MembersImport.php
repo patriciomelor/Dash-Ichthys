@@ -10,37 +10,39 @@ class MembersImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
-        // Sanitize label
-        $validLabels = ['miembro', 'asistente_regular', 'visita'];
-        $label = isset($row['label']) ? strtolower(trim($row['label'])) : 'visita';
-        
-        if (!in_array($label, $validLabels)) {
-            $label = 'visita';
+        // Parse labels
+        $rawLabels = $row['etiquetas_separadas_por_coma'] ?? '';
+        if (empty(trim($rawLabels))) {
+            $labels = ['miembro'];
+        } else {
+            $labels = array_map(function($label) {
+                return strtolower(trim($label));
+            }, explode(',', $rawLabels));
         }
 
-        $is_deceased = isset($row['is_deceased']) && in_array(strtolower(trim($row['is_deceased'])), ['si', 'sí', 'yes', 'true', '1']);
+        $is_deceased = isset($row['fallecido_sino']) && in_array(strtolower(trim($row['fallecido_sino'])), ['si', 'sí', 'yes', 'true', '1']);
 
         return new Member([
-            'first_name' => $row['first_name'] ?? 'Sin Nombre',
-            'last_name' => $row['last_name'] ?? '',
-            'email' => $row['email'] ?? null,
-            'phone' => $row['phone'] ?? null,
-            'landline' => $row['landline'] ?? null,
-            'address' => $row['address'] ?? null,
-            'label' => $label,
+            'first_name' => $row['nombres'] ?? 'Sin Nombre',
+            'last_name' => $row['apellidos'] ?? '',
+            'email' => $row['correo'] ?? null,
+            'phone' => $row['celular'] ?? null,
+            'landline' => $row['telefono_fijo'] ?? null,
+            'address' => $row['direccion'] ?? null,
+            'labels' => $labels,
             'is_active' => true,
-            'birth_date' => $this->parseDate($row['birth_date'] ?? null),
-            'conversion_date' => $this->parseDate($row['conversion_date'] ?? null),
-            'baptism_date' => $this->parseDate($row['baptism_date'] ?? null),
-            'marriage_date' => $this->parseDate($row['marriage_date'] ?? null),
-            'class_connect_1_date' => $this->parseDate($row['class_connect_1_date'] ?? null),
-            'class_grow_2_date' => $this->parseDate($row['class_grow_2_date'] ?? null),
-            'class_equip_date' => $this->parseDate($row['class_equip_date'] ?? null),
-            'membership_date' => $this->parseDate($row['membership_date'] ?? null),
-            'membership_cessation_date' => $this->parseDate($row['membership_cessation_date'] ?? null),
-            'reinstatement_date' => $this->parseDate($row['reinstatement_date'] ?? null),
+            'birth_date' => $this->parseDate($row['fecha_nacimiento'] ?? null),
+            'conversion_date' => $this->parseDate($row['fecha_conversion'] ?? null),
+            'baptism_date' => $this->parseDate($row['fecha_bautismo'] ?? null),
+            'marriage_date' => $this->parseDate($row['fecha_matrimonio'] ?? null),
+            'class_connect_1_date' => $this->parseDate($row['clase_conectar_1'] ?? null),
+            'class_grow_2_date' => $this->parseDate($row['clase_crecer_2'] ?? null),
+            'class_equip_date' => $this->parseDate($row['clase_capacitar'] ?? null),
+            'membership_date' => $this->parseDate($row['fecha_membresia'] ?? null),
+            'membership_cessation_date' => $this->parseDate($row['fecha_cese_membresia'] ?? null),
+            'reinstatement_date' => $this->parseDate($row['fecha_reinsercion'] ?? null),
             'is_deceased' => $is_deceased,
-            'death_date' => $is_deceased ? $this->parseDate($row['death_date'] ?? null) : null,
+            'death_date' => $is_deceased ? $this->parseDate($row['fecha_defuncion'] ?? null) : null,
         ]);
     }
 

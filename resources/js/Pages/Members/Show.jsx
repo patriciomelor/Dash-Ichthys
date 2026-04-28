@@ -60,7 +60,7 @@ export default function Show({ auth, member }) {
         phone: member.phone || '',
         landline: member.landline || '',
         address: member.address || '',
-        label: member.label || 'visita',
+        labels: member.labels ? member.labels.join(', ') : 'miembro',
         is_active: member.is_active !== undefined ? member.is_active : true,
         is_deceased: member.is_deceased || false,
         birth_date: member.birth_date ? member.birth_date.substring(0,10) : '',
@@ -112,17 +112,25 @@ export default function Show({ auth, member }) {
                             {member.is_deceased && <span className="text-sm font-normal text-gray-500">(Fallecido)</span>}
                         </h2>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <span className={cn(
-                            "px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full uppercase",
-                            member.label === 'miembro' ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300" :
-                            member.label === 'asistente_regular' ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
-                            "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-                        )}>
-                            {String(member.label || 'visita').replace('_', ' ')}
-                        </span>
+                    <div className="flex items-center gap-3 flex-wrap">
+                        {member.labels && member.labels.length > 0 ? (
+                            member.labels.map((lbl, idx) => (
+                                <span key={idx} className={cn(
+                                    "px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full uppercase",
+                                    lbl === 'miembro' ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300" :
+                                    lbl === 'asistente_regular' ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
+                                    "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+                                )}>
+                                    {lbl.replace('_', ' ')}
+                                </span>
+                            ))
+                        ) : (
+                            <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 uppercase">
+                                SIN ETIQUETA
+                            </span>
+                        )}
                         
-                        <PrimaryButton onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2">
+                        <PrimaryButton onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 ml-2">
                             <Edit className="h-4 w-4" />
                             Editar Perfil
                         </PrimaryButton>
@@ -374,18 +382,15 @@ export default function Show({ auth, member }) {
                             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">Clasificación en Iglesia</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <InputLabel htmlFor="label" value="Etiqueta Pastoral" />
-                                    <select 
-                                        id="label"
-                                        className="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
-                                        value={data.label}
-                                        onChange={(e) => setData('label', e.target.value)}
-                                        required
-                                    >
-                                        <option value="visita">Visita</option>
-                                        <option value="asistente_regular">Asistente Regular</option>
-                                        <option value="miembro">Miembro</option>
-                                    </select>
+                                    <InputLabel htmlFor="labels" value="Etiquetas (Separadas por coma)" />
+                                    <TextInput 
+                                        id="labels" 
+                                        className="mt-1 block w-full" 
+                                        value={data.labels} 
+                                        onChange={(e) => setData('labels', e.target.value)} 
+                                        placeholder="Ej: miembro, lider, servidor"
+                                        required 
+                                    />
                                 </div>
                                 <div className="flex items-center mt-6">
                                     <label className="flex items-center">

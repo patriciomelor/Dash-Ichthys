@@ -58,7 +58,7 @@ class MemberController extends Controller
             'phone' => 'nullable|string|max:255',
             'landline' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
-            'label' => 'required|string|in:miembro,visita,asistente_regular',
+            'labels' => 'required|string',
             'is_active' => 'boolean',
             'conversion_date' => 'nullable|date',
             'baptism_date' => 'nullable|date',
@@ -73,6 +73,18 @@ class MemberController extends Controller
             'membership_cessation_date' => 'nullable|date',
             'reinstatement_date' => 'nullable|date',
         ]);
+
+        // Parse labels string to array
+        $rawLabels = $validated['labels'];
+        $labelsArray = array_filter(array_map(function($label) {
+            return strtolower(trim($label));
+        }, explode(',', $rawLabels)));
+
+        if (empty($labelsArray)) {
+            $labelsArray = ['miembro'];
+        }
+
+        $validated['labels'] = $labelsArray;
 
         $member->update($validated);
 

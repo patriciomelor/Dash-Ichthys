@@ -10,11 +10,11 @@ class MembersTemplateExport implements FromArray
     {
         return [
             [
-                'first_name', 'last_name', 'email', 'phone', 'landline', 'address', 'label', 
-                'birth_date', 'conversion_date', 'baptism_date', 'marriage_date', 
-                'class_connect_1_date', 'class_grow_2_date', 'class_equip_date', 
-                'membership_date', 'membership_cessation_date', 'reinstatement_date', 
-                'is_deceased', 'death_date'
+                'Nombres', 'Apellidos', 'Correo', 'Celular', 'Telefono Fijo', 'Direccion', 'Etiquetas (separadas por coma)', 
+                'Fecha Nacimiento', 'Fecha Conversion', 'Fecha Bautismo', 'Fecha Matrimonio', 
+                'Clase Conectar 1', 'Clase Crecer 2', 'Clase Capacitar', 
+                'Fecha Membresia', 'Fecha Cese Membresia', 'Fecha Reinsercion', 
+                'Fallecido (Si/No)', 'Fecha Defuncion'
             ]
         ];
     }

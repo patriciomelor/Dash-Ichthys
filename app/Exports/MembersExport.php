@@ -48,6 +48,10 @@ class MembersExport implements FromCollection, WithHeadings, WithMapping, Should
 
     public function map($member): array
     {
+        $labelsString = implode(', ', array_map(function($label) {
+            return ucfirst(str_replace('_', ' ', $label));
+        }, $member->labels ?? ['miembro']));
+
         return [
             $member->id,
             $member->first_name,
@@ -56,7 +60,7 @@ class MembersExport implements FromCollection, WithHeadings, WithMapping, Should
             $member->phone,
             $member->landline,
             $member->address,
-            ucfirst(str_replace('_', ' ', $member->label)),
+            $labelsString,
             $member->is_active ? 'Activo' : 'Inactivo',
             $member->birth_date ? $member->birth_date->format('d/m/Y') : '',
             $member->conversion_date ? $member->conversion_date->format('d/m/Y') : '',

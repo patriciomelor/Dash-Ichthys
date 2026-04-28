@@ -13,7 +13,7 @@ class Member extends Model
         'email',
         'phone',
         'landline',
-        'label',
+        'labels',
         'is_active',
         'conversion_date',
         'baptism_date',
@@ -30,6 +30,7 @@ class Member extends Model
     ];
 
     protected $casts = [
+        'labels' => 'array',
         'is_active' => 'boolean',
         'is_deceased' => 'boolean',
         'conversion_date' => 'date',
