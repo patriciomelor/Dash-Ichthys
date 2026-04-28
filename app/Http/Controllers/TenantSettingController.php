@@ -11,9 +11,11 @@ class TenantSettingController extends Controller
     public function index()
     {
         $settings = TenantSetting::first() ?? new TenantSetting();
+        $tags = \App\Models\Tag::orderBy('name')->get();
         
         return Inertia::render('Settings/Index', [
-            'settings' => $settings
+            'settings' => $settings,
+            'tags' => $tags
         ]);
     }
 

@@ -17,7 +17,7 @@ import SecondaryButton from '@/Components/SecondaryButton';
 import { cn } from '@/lib/utils';
 import axios from 'axios';
 
-export default function Index({ auth, members }) {
+export default function Index({ auth, members, tags }) {
     const [isImportModalOpen, setIsImportModalOpen] = useState(false);
     const [importSuccess, setImportSuccess] = useState(false);
     const [importError, setImportError] = useState('');
@@ -164,16 +164,20 @@ export default function Index({ auth, members }) {
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex flex-wrap gap-1">
                                                 {member.labels && member.labels.length > 0 ? (
-                                                    member.labels.map((lbl, idx) => (
-                                                        <span key={idx} className={cn(
-                                                            "px-2.5 py-1 inline-flex text-[10px] leading-4 font-semibold rounded-full uppercase",
-                                                            lbl === 'miembro' ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300" :
-                                                            lbl === 'asistente_regular' ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
-                                                            "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-                                                        )}>
-                                                            {lbl.replace('_', ' ')}
-                                                        </span>
-                                                    ))
+                                                    member.labels.map((lbl, idx) => {
+                                                        const tagObj = tags ? tags.find(t => t.name === lbl) : null;
+                                                        return (
+                                                            <span key={idx} 
+                                                                className="px-2.5 py-1 inline-flex text-[10px] leading-4 font-semibold rounded-full uppercase"
+                                                                style={{ 
+                                                                    backgroundColor: tagObj ? tagObj.bg_color : '#f3f4f6', 
+                                                                    color: tagObj ? tagObj.text_color : '#1f2937' 
+                                                                }}
+                                                            >
+                                                                {lbl.replace('_', ' ')}
+                                                            </span>
+                                                        );
+                                                    })
                                                 ) : (
                                                     <span className="px-2.5 py-1 inline-flex text-[10px] leading-4 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 uppercase">
                                                         SIN ETIQUETA

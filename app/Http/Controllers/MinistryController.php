@@ -63,10 +63,12 @@ class MinistryController extends Controller
     {
         $ministry = Ministry::with('members')->findOrFail($id);
         $allMembers = \App\Models\Member::where('is_active', true)->orderBy('first_name')->get();
+        $tags = \App\Models\Tag::orderBy('name')->get();
 
         return Inertia::render('Ministries/Show', [
             'ministry' => $ministry,
-            'availableMembers' => $allMembers
+            'availableMembers' => $allMembers,
+            'tags' => $tags
         ]);
     }
 

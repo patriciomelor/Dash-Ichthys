@@ -16,7 +16,7 @@ import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import Modal from '@/Components/Modal';
 
-export default function Show({ auth, ministry, availableMembers }) {
+export default function Show({ auth, ministry, availableMembers, tags }) {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -114,9 +114,21 @@ export default function Show({ auth, ministry, availableMembers }) {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded text-xs font-medium uppercase tracking-wider">
-                                                {member.pivot.role}
-                                            </span>
+                                            {(() => {
+                                                const roleName = member.pivot.role || 'integrante';
+                                                const tagObj = tags ? tags.find(t => t.name.toLowerCase() === roleName.toLowerCase()) : null;
+                                                return (
+                                                    <span 
+                                                        className="px-2 py-1 rounded text-xs font-medium uppercase tracking-wider shadow-sm"
+                                                        style={{ 
+                                                            backgroundColor: tagObj ? tagObj.bg_color : '#f3f4f6', 
+                                                            color: tagObj ? tagObj.text_color : '#1f2937' 
+                                                        }}
+                                                    >
+                                                        {roleName.replace('_', ' ')}
+                                                    </span>
+                                                );
+                                            })()}
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <button 
@@ -185,11 +197,12 @@ export default function Show({ auth, ministry, availableMembers }) {
                                 onChange={(e) => setData('role', e.target.value)}
                                 required
                             >
-                                <option value="integrante">Integrante</option>
-                                <option value="lider">Líder</option>
-                                <option value="co-lider">Co-Líder</option>
-                                <option value="servidor">Servidor</option>
-                                <option value="tesorero">Tesorero</option>
+                                <option value="integrante">Integrante (Defecto)</option>
+                                {tags && tags.length > 0 && tags.map(tag => (
+                                    <option key={tag.id} value={tag.name.toLowerCase()}>
+                                        {tag.name.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                    </option>
+                                ))}
                             </select>
                             <InputError message={errors.role} className="mt-2" />
                         </div>

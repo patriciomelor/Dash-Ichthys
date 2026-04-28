@@ -12,8 +12,11 @@ import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import { useState, useEffect } from 'react';
+import Modal from '@/Components/Modal';
+import SecondaryButton from '@/Components/SecondaryButton';
+import { Plus, Trash2, Tag as TagIcon } from 'lucide-react';
 
-export default function Index({ auth, settings }) {
+export default function Index({ auth, settings, tags }) {
     const [showSuccess, setShowSuccess] = useState(false);
 
     const { data, setData, post, processing, errors, recentlySuccessful } = useForm({
@@ -37,6 +40,48 @@ export default function Index({ auth, settings }) {
         });
     };
 
+    // Tag Management
+    const [isTagModalOpen, setIsTagModalOpen] = useState(false);
+    const [editingTag, setEditingTag] = useState(null);
+    const { data: tagData, setData: setTagData, post: postTag, put: putTag, delete: deleteTag, processing: processingTag, errors: tagErrors, reset: resetTag } = useForm({
+        name: '',
+        bg_color: '#f3f4f6',
+        text_color: '#1f2937'
+    });
+
+    const openTagModal = (tag = null) => {
+        setEditingTag(tag);
+        if (tag) {
+            setTagData({ name: tag.name, bg_color: tag.bg_color, text_color: tag.text_color });
+        } else {
+            resetTag();
+        }
+        setIsTagModalOpen(true);
+    };
+
+    const handleTagSubmit = (e) => {
+        e.preventDefault();
+        if (editingTag) {
+            putTag(route('settings.tags.update', editingTag.id), {
+                onSuccess: () => setIsTagModalOpen(false),
+                preserveScroll: true
+            });
+        } else {
+            postTag(route('settings.tags.store'), {
+                onSuccess: () => setIsTagModalOpen(false),
+                preserveScroll: true
+            });
+        }
+    };
+
+    const handleDeleteTag = (id) => {
+        if (confirm('¿Estás seguro de eliminar esta etiqueta? Esto afectará la visualización de los miembros que la tengan.')) {
+            deleteTag(route('settings.tags.destroy', id), {
+                preserveScroll: true
+            });
+        }
+    };
+
     return (
         <AuthenticatedLayout
             header={
@@ -55,7 +100,8 @@ export default function Index({ auth, settings }) {
         >
             <Head title="Configuración del Portal" />
 
-            <div className="max-w-4xl pb-12">
+            <div className="max-w-4xl pb-12 space-y-8">
+                {/* Main Settings Card */}
                 <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <div className="p-6">
                         <form onSubmit={handleSubmit} className="space-y-8">
@@ -190,7 +236,142 @@ export default function Index({ auth, settings }) {
                         </form>
                     </div>
                 </div>
+
+                {/* Tags Management Card */}
+                <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <div className="p-6">
+                        <div className="flex justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-3 mb-5">
+                            <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                                <TagIcon className="h-5 w-5 text-gray-400" />
+                                Gestión de Etiquetas
+                            </h3>
+                            <PrimaryButton onClick={() => openTagModal()} type="button" className="flex items-center gap-2">
+                                <Plus className="h-4 w-4" />
+                                Nueva Etiqueta
+                            </PrimaryButton>
+                        </div>
+                        
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead className="bg-gray-50 dark:bg-gray-900/50">
+                                    <tr>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Previsualización</th>
+                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    {tags && tags.map((tag) => (
+                                        <tr key={tag.id}>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                                {tag.name.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <span 
+                                                    className="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full uppercase"
+                                                    style={{ backgroundColor: tag.bg_color, color: tag.text_color }}
+                                                >
+                                                    {tag.name.replace('_', ' ')}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <button onClick={() => openTagModal(tag)} className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-4">
+                                                    Editar
+                                                </button>
+                                                <button onClick={() => handleDeleteTag(tag.id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                                                    Eliminar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {(!tags || tags.length === 0) && (
+                                        <tr>
+                                            <td colSpan="3" className="px-6 py-4 text-center text-sm text-gray-500">
+                                                No hay etiquetas creadas.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            {/* Modal de Etiqueta */}
+            <Modal show={isTagModalOpen} onClose={() => setIsTagModalOpen(false)} maxWidth="md">
+                <div className="p-6">
+                    <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                        {editingTag ? 'Editar Etiqueta' : 'Crear Nueva Etiqueta'}
+                    </h2>
+                    <form onSubmit={handleTagSubmit} className="space-y-4">
+                        <div>
+                            <InputLabel htmlFor="name" value="Nombre de Etiqueta" />
+                            <TextInput
+                                id="name"
+                                className="mt-1 block w-full"
+                                value={tagData.name}
+                                onChange={(e) => setTagData('name', e.target.value)}
+                                required
+                            />
+                            <InputError message={tagErrors.name} className="mt-1" />
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <InputLabel htmlFor="tag_bg_color" value="Color de Fondo" />
+                                <div className="flex items-center gap-2 mt-1">
+                                    <input
+                                        type="color"
+                                        id="tag_bg_color"
+                                        className="h-8 w-12 rounded cursor-pointer border-0 p-0"
+                                        value={tagData.bg_color}
+                                        onChange={(e) => setTagData('bg_color', e.target.value)}
+                                    />
+                                    <TextInput
+                                        className="block w-full text-xs uppercase"
+                                        value={tagData.bg_color}
+                                        onChange={(e) => setTagData('bg_color', e.target.value)}
+                                        maxLength="7"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <InputLabel htmlFor="tag_text_color" value="Color de Texto" />
+                                <div className="flex items-center gap-2 mt-1">
+                                    <input
+                                        type="color"
+                                        id="tag_text_color"
+                                        className="h-8 w-12 rounded cursor-pointer border-0 p-0"
+                                        value={tagData.text_color}
+                                        onChange={(e) => setTagData('text_color', e.target.value)}
+                                    />
+                                    <TextInput
+                                        className="block w-full text-xs uppercase"
+                                        value={tagData.text_color}
+                                        onChange={(e) => setTagData('text_color', e.target.value)}
+                                        maxLength="7"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg flex justify-center items-center">
+                            <span 
+                                className="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full uppercase"
+                                style={{ backgroundColor: tagData.bg_color, color: tagData.text_color }}
+                            >
+                                {tagData.name || 'VISTA PREVIA'}
+                            </span>
+                        </div>
+
+                        <div className="mt-6 flex justify-end gap-3">
+                            <SecondaryButton onClick={() => setIsTagModalOpen(false)}>Cancelar</SecondaryButton>
+                            <PrimaryButton disabled={processingTag}>Guardar</PrimaryButton>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
         </AuthenticatedLayout>
     );
 }

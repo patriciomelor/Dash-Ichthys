@@ -11,18 +11,22 @@ class MemberController extends Controller
     public function index()
     {
         $members = Member::orderBy('first_name')->paginate(15);
+        $tags = \App\Models\Tag::orderBy('name')->get();
         
         return Inertia::render('Members/Index', [
-            'members' => $members
+            'members' => $members,
+            'tags' => $tags
         ]);
     }
 
     public function show($id)
     {
         $member = Member::with(['comments.user'])->findOrFail($id);
+        $tags = \App\Models\Tag::orderBy('name')->get();
 
         return Inertia::render('Members/Show', [
-            'member' => $member
+            'member' => $member,
+            'tags' => $tags
         ]);
     }
 
@@ -58,7 +62,7 @@ class MemberController extends Controller
             'phone' => 'nullable|string|max:255',
             'landline' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
-            'labels' => 'required|string',
+            'labels' => 'required',
             'is_active' => 'boolean',
             'conversion_date' => 'nullable|date',
             'baptism_date' => 'nullable|date',
@@ -74,11 +78,17 @@ class MemberController extends Controller
             'reinstatement_date' => 'nullable|date',
         ]);
 
-        // Parse labels string to array
+        // If labels comes as array, filter it. If string, explode it.
         $rawLabels = $validated['labels'];
-        $labelsArray = array_filter(array_map(function($label) {
-            return strtolower(trim($label));
-        }, explode(',', $rawLabels)));
+        if (is_array($rawLabels)) {
+            $labelsArray = array_filter(array_map(function($label) {
+                return strtolower(trim($label));
+            }, $rawLabels));
+        } else {
+            $labelsArray = array_filter(array_map(function($label) {
+                return strtolower(trim($label));
+            }, explode(',', $rawLabels)));
+        }
 
         if (empty($labelsArray)) {
             $labelsArray = ['miembro'];

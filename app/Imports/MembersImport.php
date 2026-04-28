@@ -15,9 +15,17 @@ class MembersImport implements ToModel, WithHeadingRow
         if (empty(trim($rawLabels))) {
             $labels = ['miembro'];
         } else {
-            $labels = array_map(function($label) {
+            $labels = array_unique(array_filter(array_map(function($label) {
                 return strtolower(trim($label));
-            }, explode(',', $rawLabels));
+            }, explode(',', $rawLabels))));
+        }
+
+        // Auto-create tags if they don't exist
+        foreach ($labels as $labelName) {
+            \App\Models\Tag::firstOrCreate(
+                ['name' => $labelName],
+                ['bg_color' => '#f3f4f6', 'text_color' => '#1f2937']
+            );
         }
 
         $is_deceased = isset($row['fallecido_sino']) && in_array(strtolower(trim($row['fallecido_sino'])), ['si', 'sí', 'yes', 'true', '1']);

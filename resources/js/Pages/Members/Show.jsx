@@ -36,7 +36,7 @@ try {
     console.error('Error extending dayjs', e);
 }
 
-export default function Show({ auth, member }) {
+export default function Show({ auth, member, tags }) {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     // Comment Form
@@ -114,18 +114,22 @@ export default function Show({ auth, member }) {
                     </div>
                     <div className="flex items-center gap-3 flex-wrap">
                         {member.labels && member.labels.length > 0 ? (
-                            member.labels.map((lbl, idx) => (
-                                <span key={idx} className={cn(
-                                    "px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full uppercase",
-                                    lbl === 'miembro' ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300" :
-                                    lbl === 'asistente_regular' ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
-                                    "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-                                )}>
-                                    {lbl.replace('_', ' ')}
-                                </span>
-                            ))
+                            member.labels.map((lbl, idx) => {
+                                const tagObj = tags ? tags.find(t => t.name === lbl) : null;
+                                return (
+                                    <span key={idx} 
+                                        className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full uppercase shadow-sm"
+                                        style={{ 
+                                            backgroundColor: tagObj ? tagObj.bg_color : '#f3f4f6', 
+                                            color: tagObj ? tagObj.text_color : '#1f2937' 
+                                        }}
+                                    >
+                                        {lbl.replace('_', ' ')}
+                                    </span>
+                                );
+                            })
                         ) : (
-                            <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 uppercase">
+                            <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 uppercase shadow-sm">
                                 SIN ETIQUETA
                             </span>
                         )}
@@ -382,15 +386,52 @@ export default function Show({ auth, member }) {
                             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">Clasificación en Iglesia</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <InputLabel htmlFor="labels" value="Etiquetas (Separadas por coma)" />
-                                    <TextInput 
-                                        id="labels" 
-                                        className="mt-1 block w-full" 
-                                        value={data.labels} 
-                                        onChange={(e) => setData('labels', e.target.value)} 
-                                        placeholder="Ej: miembro, lider, servidor"
-                                        required 
-                                    />
+                                    <InputLabel value="Etiquetas" className="mb-2" />
+                                    <div className="flex flex-wrap gap-2 mt-1">
+                                        {tags && tags.length > 0 ? (
+                                            tags.map((tag) => {
+                                                // Convert data.labels string back to array to check if selected
+                                                const selectedLabels = typeof data.labels === 'string' 
+                                                    ? data.labels.split(',').map(l => l.trim().toLowerCase()) 
+                                                    : data.labels || [];
+                                                
+                                                const isSelected = selectedLabels.includes(tag.name.toLowerCase());
+                                                
+                                                return (
+                                                    <label key={tag.id} className={cn(
+                                                        "inline-flex items-center px-3 py-1.5 rounded-full cursor-pointer text-xs font-semibold border shadow-sm transition-colors",
+                                                        isSelected ? "border-indigo-500 ring-1 ring-indigo-500" : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                                                    )}
+                                                    style={{
+                                                        backgroundColor: isSelected ? tag.bg_color : 'transparent',
+                                                        color: isSelected ? tag.text_color : 'inherit',
+                                                        borderColor: isSelected ? tag.text_color : undefined,
+                                                    }}>
+                                                        <input 
+                                                            type="checkbox" 
+                                                            className="sr-only"
+                                                            checked={isSelected}
+                                                            onChange={(e) => {
+                                                                let newLabels = [...selectedLabels];
+                                                                if (e.target.checked) {
+                                                                    newLabels.push(tag.name.toLowerCase());
+                                                                } else {
+                                                                    newLabels = newLabels.filter(l => l !== tag.name.toLowerCase());
+                                                                }
+                                                                // Always clean up empty strings
+                                                                newLabels = newLabels.filter(l => l !== '');
+                                                                setData('labels', newLabels.join(', '));
+                                                            }}
+                                                        />
+                                                        {tag.name.replace('_', ' ').toUpperCase()}
+                                                    </label>
+                                                );
+                                            })
+                                        ) : (
+                                            <div className="text-sm text-gray-500">No hay etiquetas configuradas.</div>
+                                        )}
+                                    </div>
+                                    <p className="mt-2 text-xs text-gray-500">Puedes configurar más etiquetas en Ajustes.</p>
                                 </div>
                                 <div className="flex items-center mt-6">
                                     <label className="flex items-center">

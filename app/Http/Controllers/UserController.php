@@ -15,10 +15,12 @@ class UserController extends Controller
     {
         $users = User::with('roles')->paginate(15);
         $roles = Role::all();
+        $tags = \App\Models\Tag::orderBy('name')->get();
         
         return Inertia::render('Users/Index', [
             'users' => $users,
-            'roles' => $roles
+            'roles' => $roles,
+            'tags' => $tags
         ]);
     }
 

@@ -51,6 +51,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/settings', [\App\Http\Controllers\TenantSettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [\App\Http\Controllers\TenantSettingController::class, 'update'])->name('settings.update');
+    
+    Route::post('/settings/tags', [\App\Http\Controllers\TagController::class, 'store'])->name('settings.tags.store');
+    Route::put('/settings/tags/{id}', [\App\Http\Controllers\TagController::class, 'update'])->name('settings.tags.update');
+    Route::delete('/settings/tags/{id}', [\App\Http\Controllers\TagController::class, 'destroy'])->name('settings.tags.destroy');
 
     Route::get('/users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
     Route::post('/users', [\App\Http\Controllers\UserController::class, 'store'])->name('users.store');

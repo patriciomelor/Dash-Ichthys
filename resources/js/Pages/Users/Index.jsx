@@ -17,7 +17,7 @@ import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import { cn } from '@/lib/utils';
 
-export default function Index({ auth, users, roles }) {
+export default function Index({ auth, users, roles, tags }) {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -108,17 +108,20 @@ export default function Index({ auth, users, roles }) {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            {user.roles && user.roles.map((role) => (
-                                                <span key={role.id} className={cn(
-                                                    "px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full uppercase mr-2",
-                                                    role.name === 'super-admin' ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300" :
-                                                    role.name === 'pastor' ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300" :
-                                                    role.name === 'lider' ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
-                                                    "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-                                                )}>
-                                                    {role.name}
-                                                </span>
-                                            ))}
+                                            {user.roles && user.roles.map((role) => {
+                                                const tagObj = tags ? tags.find(t => t.name.toLowerCase() === role.name.toLowerCase()) : null;
+                                                return (
+                                                    <span key={role.id} 
+                                                        className="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full uppercase mr-2 shadow-sm"
+                                                        style={{ 
+                                                            backgroundColor: tagObj ? tagObj.bg_color : '#f3f4f6', 
+                                                            color: tagObj ? tagObj.text_color : '#1f2937' 
+                                                        }}
+                                                    >
+                                                        {role.name}
+                                                    </span>
+                                                );
+                                            })}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                             {new Date(user.created_at).toLocaleDateString()}
