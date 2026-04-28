@@ -72,11 +72,30 @@ export default function Index({ auth, members }) {
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <Dropdown>
+                            <Dropdown.Trigger>
+                                <span className="inline-flex rounded-md">
+                                    <PrimaryButton type="button" className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 flex items-center gap-2">
+                                        Exportar Lista
+                                    </PrimaryButton>
+                                </span>
+                            </Dropdown.Trigger>
+                            <Dropdown.Content align="right" width="48">
+                                <Dropdown.Link href={route('members.export.excel')} as="a" className="flex items-center gap-2">
+                                    <FileSpreadsheet className="h-4 w-4" />
+                                    Exportar a Excel
+                                </Dropdown.Link>
+                                <Dropdown.Link href={route('members.export.pdf')} as="a" className="flex items-center gap-2 text-red-600 hover:text-red-700">
+                                    Exportar a PDF
+                                </Dropdown.Link>
+                            </Dropdown.Content>
+                        </Dropdown>
+
                         <PrimaryButton 
                             onClick={() => setIsImportModalOpen(true)}
                             className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 flex items-center gap-2"
                         >
-                            <FileSpreadsheet className="h-4 w-4" />
+                            <Upload className="h-4 w-4" />
                             Importar Excel
                         </PrimaryButton>
                     </div>

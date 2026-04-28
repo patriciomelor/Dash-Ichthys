@@ -28,8 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/members', [\App\Http\Controllers\MemberController::class, 'index'])->name('members.index');
     Route::post('/members/import', [\App\Http\Controllers\MemberController::class, 'import'])->name('members.import');
+    Route::get('/members/export/excel', [\App\Http\Controllers\MemberController::class, 'exportExcel'])->name('members.export.excel');
+    Route::get('/members/export/pdf', [\App\Http\Controllers\MemberController::class, 'exportPdf'])->name('members.export.pdf');
     Route::get('/members/export-template', [\App\Http\Controllers\MemberController::class, 'exportTemplate'])->name('members.export-template');
     Route::get('/members/{id}', [\App\Http\Controllers\MemberController::class, 'show'])->name('members.show');
+    Route::put('/members/{id}', [\App\Http\Controllers\MemberController::class, 'update'])->name('members.update');
     Route::post('/members/{id}/comments', [\App\Http\Controllers\MemberController::class, 'addComment'])->name('members.comments.add');
 
     Route::get('/forms', [\App\Http\Controllers\FormController::class, 'index'])->name('forms.index');
