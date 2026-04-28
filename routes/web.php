@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/members/export-template', [\App\Http\Controllers\MemberController::class, 'exportTemplate'])->name('members.export-template');
     Route::get('/members/{id}', [\App\Http\Controllers\MemberController::class, 'show'])->name('members.show');
     Route::put('/members/{id}', [\App\Http\Controllers\MemberController::class, 'update'])->name('members.update');
+    Route::delete('/members/{id}', [\App\Http\Controllers\MemberController::class, 'destroy'])->name('members.destroy');
     Route::post('/members/{id}/comments', [\App\Http\Controllers\MemberController::class, 'addComment'])->name('members.comments.add');
 
     Route::get('/forms', [\App\Http\Controllers\FormController::class, 'index'])->name('forms.index');
