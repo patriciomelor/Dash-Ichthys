@@ -15,7 +15,7 @@ class MembersImport implements ToModel, WithHeadingRow
         if (empty(trim($rawLabels))) {
             $labels = ['miembro'];
         } else {
-            $labels = array_unique(array_filter(array_map(function($label) {
+            $labels = array_unique(array_filter(array_map(function ($label) {
                 return strtolower(trim($label));
             }, explode(',', $rawLabels))));
         }
@@ -43,8 +43,8 @@ class MembersImport implements ToModel, WithHeadingRow
             'conversion_date' => $this->parseDate($row['fecha_conversion'] ?? null),
             'baptism_date' => $this->parseDate($row['fecha_bautismo'] ?? null),
             'marriage_date' => $this->parseDate($row['fecha_matrimonio'] ?? null),
-            'class_connect_1_date' => $this->parseDate($row['clase_conectar_1'] ?? null),
-            'class_grow_2_date' => $this->parseDate($row['clase_crecer_2'] ?? null),
+            'class_connect_1_date' => $this->parseDate($row['clase_conectar'] ?? null),
+            'class_grow_2_date' => $this->parseDate($row['clase_crecer'] ?? null),
             'class_equip_date' => $this->parseDate($row['clase_capacitar'] ?? null),
             'membership_date' => $this->parseDate($row['fecha_membresia'] ?? null),
             'membership_cessation_date' => $this->parseDate($row['fecha_cese_membresia'] ?? null),

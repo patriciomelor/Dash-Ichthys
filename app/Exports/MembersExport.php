@@ -33,8 +33,8 @@ class MembersExport implements FromCollection, WithHeadings, WithMapping, Should
             'Fecha Nacimiento',
             'Fecha Conversión',
             'Fecha Bautismo',
-            'Clase Conectar 1',
-            'Clase Crecer 2',
+            'Clase Conectar',
+            'Clase Crecer',
             'Clase Capacitar',
             'Fecha Matrimonio',
             'Fecha Membresía',
@@ -48,7 +48,7 @@ class MembersExport implements FromCollection, WithHeadings, WithMapping, Should
 
     public function map($member): array
     {
-        $labelsString = implode(', ', array_map(function($label) {
+        $labelsString = implode(', ', array_map(function ($label) {
             return ucfirst(str_replace('_', ' ', $label));
         }, $member->labels ?? ['miembro']));
 
@@ -81,7 +81,7 @@ class MembersExport implements FromCollection, WithHeadings, WithMapping, Should
     public function styles(Worksheet $sheet)
     {
         return [
-            1    => ['font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']], 'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'color' => ['rgb' => '4F46E5']]],
+            1 => ['font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']], 'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'color' => ['rgb' => '4F46E5']]],
         ];
     }
 }

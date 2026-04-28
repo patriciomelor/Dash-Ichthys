@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { 
+import {
     User,
     ArrowLeft,
     Phone,
@@ -63,17 +63,17 @@ export default function Show({ auth, member, tags }) {
         labels: member.labels ? member.labels.join(', ') : 'miembro',
         is_active: member.is_active !== undefined ? member.is_active : true,
         is_deceased: member.is_deceased || false,
-        birth_date: member.birth_date ? member.birth_date.substring(0,10) : '',
-        conversion_date: member.conversion_date ? member.conversion_date.substring(0,10) : '',
-        baptism_date: member.baptism_date ? member.baptism_date.substring(0,10) : '',
-        class_connect_1_date: member.class_connect_1_date ? member.class_connect_1_date.substring(0,10) : '',
-        class_grow_2_date: member.class_grow_2_date ? member.class_grow_2_date.substring(0,10) : '',
-        class_equip_date: member.class_equip_date ? member.class_equip_date.substring(0,10) : '',
-        marriage_date: member.marriage_date ? member.marriage_date.substring(0,10) : '',
-        membership_date: member.membership_date ? member.membership_date.substring(0,10) : '',
-        membership_cessation_date: member.membership_cessation_date ? member.membership_cessation_date.substring(0,10) : '',
-        reinstatement_date: member.reinstatement_date ? member.reinstatement_date.substring(0,10) : '',
-        death_date: member.death_date ? member.death_date.substring(0,10) : '',
+        birth_date: member.birth_date ? member.birth_date.substring(0, 10) : '',
+        conversion_date: member.conversion_date ? member.conversion_date.substring(0, 10) : '',
+        baptism_date: member.baptism_date ? member.baptism_date.substring(0, 10) : '',
+        class_connect_1_date: member.class_connect_1_date ? member.class_connect_1_date.substring(0, 10) : '',
+        class_grow_2_date: member.class_grow_2_date ? member.class_grow_2_date.substring(0, 10) : '',
+        class_equip_date: member.class_equip_date ? member.class_equip_date.substring(0, 10) : '',
+        marriage_date: member.marriage_date ? member.marriage_date.substring(0, 10) : '',
+        membership_date: member.membership_date ? member.membership_date.substring(0, 10) : '',
+        membership_cessation_date: member.membership_cessation_date ? member.membership_cessation_date.substring(0, 10) : '',
+        reinstatement_date: member.reinstatement_date ? member.reinstatement_date.substring(0, 10) : '',
+        death_date: member.death_date ? member.death_date.substring(0, 10) : '',
     });
 
     const handleEditSubmit = (e) => {
@@ -117,11 +117,11 @@ export default function Show({ auth, member, tags }) {
                             member.labels.map((lbl, idx) => {
                                 const tagObj = tags ? tags.find(t => t.name === lbl) : null;
                                 return (
-                                    <span key={idx} 
+                                    <span key={idx}
                                         className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full uppercase shadow-sm"
-                                        style={{ 
-                                            backgroundColor: tagObj ? tagObj.bg_color : '#f3f4f6', 
-                                            color: tagObj ? tagObj.text_color : '#1f2937' 
+                                        style={{
+                                            backgroundColor: tagObj ? tagObj.bg_color : '#f3f4f6',
+                                            color: tagObj ? tagObj.text_color : '#1f2937'
                                         }}
                                     >
                                         {lbl.replace('_', ' ')}
@@ -133,7 +133,7 @@ export default function Show({ auth, member, tags }) {
                                 SIN ETIQUETA
                             </span>
                         )}
-                        
+
                         <PrimaryButton onClick={() => setIsEditModalOpen(true)} className="flex items-center gap-2 ml-2">
                             <Edit className="h-4 w-4" />
                             Editar Perfil
@@ -146,10 +146,10 @@ export default function Show({ auth, member, tags }) {
 
             <div className="max-w-7xl mx-auto space-y-6 pb-12">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    
+
                     {/* Sidebar Izquierdo: Información del Miembro */}
                     <div className="lg:col-span-1 space-y-6">
-                        
+
                         {/* Datos de Contacto */}
                         <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 p-6">
                             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">
@@ -225,14 +225,14 @@ export default function Show({ auth, member, tags }) {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <div className={cn("h-3 w-3 rounded-full", member.class_connect_1_date ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600")}></div>
-                                        <span className="text-sm text-gray-700 dark:text-gray-300">Conectar 1</span>
+                                        <span className="text-sm text-gray-700 dark:text-gray-300">Conectar</span>
                                     </div>
                                     <span className="text-xs text-gray-500">{member.class_connect_1_date ? dayjs(member.class_connect_1_date).format('MM/YYYY') : 'Pendiente'}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <div className={cn("h-3 w-3 rounded-full", member.class_grow_2_date ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600")}></div>
-                                        <span className="text-sm text-gray-700 dark:text-gray-300">Crecer 2</span>
+                                        <span className="text-sm text-gray-700 dark:text-gray-300">Crecer</span>
                                     </div>
                                     <span className="text-xs text-gray-500">{member.class_grow_2_date ? dayjs(member.class_grow_2_date).format('MM/YYYY') : 'Pendiente'}</span>
                                 </div>
@@ -264,7 +264,7 @@ export default function Show({ auth, member, tags }) {
                     {/* Contenido Principal: Seguimiento Pastoral */}
                     <div className="lg:col-span-2 space-y-6">
                         <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl border border-gray-200 dark:border-gray-700 flex flex-col h-[750px]">
-                            
+
                             <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 rounded-t-xl">
                                 <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center gap-2">
                                     <MessageSquare className="h-5 w-5 text-indigo-500" />
@@ -347,7 +347,7 @@ export default function Show({ auth, member, tags }) {
                     </div>
 
                     <form onSubmit={handleEditSubmit} className="space-y-8 max-h-[70vh] overflow-y-auto px-1 pb-4">
-                        
+
                         {/* Datos Básicos */}
                         <div>
                             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">Información Básica</h3>
@@ -391,24 +391,24 @@ export default function Show({ auth, member, tags }) {
                                         {tags && tags.length > 0 ? (
                                             tags.map((tag) => {
                                                 // Convert data.labels string back to array to check if selected
-                                                const selectedLabels = typeof data.labels === 'string' 
-                                                    ? data.labels.split(',').map(l => l.trim().toLowerCase()) 
+                                                const selectedLabels = typeof data.labels === 'string'
+                                                    ? data.labels.split(',').map(l => l.trim().toLowerCase())
                                                     : data.labels || [];
-                                                
+
                                                 const isSelected = selectedLabels.includes(tag.name.toLowerCase());
-                                                
+
                                                 return (
                                                     <label key={tag.id} className={cn(
                                                         "inline-flex items-center px-3 py-1.5 rounded-full cursor-pointer text-xs font-semibold border shadow-sm transition-colors",
                                                         isSelected ? "border-indigo-500 ring-1 ring-indigo-500" : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
                                                     )}
-                                                    style={{
-                                                        backgroundColor: isSelected ? tag.bg_color : 'transparent',
-                                                        color: isSelected ? tag.text_color : 'inherit',
-                                                        borderColor: isSelected ? tag.text_color : undefined,
-                                                    }}>
-                                                        <input 
-                                                            type="checkbox" 
+                                                        style={{
+                                                            backgroundColor: isSelected ? tag.bg_color : 'transparent',
+                                                            color: isSelected ? tag.text_color : 'inherit',
+                                                            borderColor: isSelected ? tag.text_color : undefined,
+                                                        }}>
+                                                        <input
+                                                            type="checkbox"
                                                             className="sr-only"
                                                             checked={isSelected}
                                                             onChange={(e) => {
@@ -470,11 +470,11 @@ export default function Show({ auth, member, tags }) {
                             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">Clases de Crecimiento (Fecha Completada)</h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
-                                    <InputLabel htmlFor="class_connect_1_date" value="Conectar 1" />
+                                    <InputLabel htmlFor="class_connect_1_date" value="Conectar" />
                                     <TextInput id="class_connect_1_date" type="date" className="mt-1 block w-full" value={data.class_connect_1_date} onChange={(e) => setData('class_connect_1_date', e.target.value)} />
                                 </div>
                                 <div>
-                                    <InputLabel htmlFor="class_grow_2_date" value="Crecer 2" />
+                                    <InputLabel htmlFor="class_grow_2_date" value="Crecer" />
                                     <TextInput id="class_grow_2_date" type="date" className="mt-1 block w-full" value={data.class_grow_2_date} onChange={(e) => setData('class_grow_2_date', e.target.value)} />
                                 </div>
                                 <div>
