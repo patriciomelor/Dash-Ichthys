@@ -12,12 +12,17 @@ import {
     GraduationCap 
 } from 'lucide-react';
 import dayjs from 'dayjs';
-import 'dayjs/locale/es';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { cn } from '@/lib/utils';
 
-dayjs.extend(relativeTime);
-dayjs.locale('es');
+try {
+    dayjs.extend(relativeTime.default || relativeTime);
+    import('dayjs/locale/es').then(() => {
+        dayjs.locale('es');
+    }).catch(e => console.error(e));
+} catch(e) {
+    console.error('Error extending dayjs', e);
+}
 
 export default function Dashboard({ ministries, membersStats, classesStats, todayEvents, recentMembers }) {
     
@@ -101,7 +106,7 @@ export default function Dashboard({ ministries, membersStats, classesStats, toda
                                             <span className="text-gray-500">{classesStats.connect.completed} Completadas / {classesStats.connect.pending} Pendientes</span>
                                         </div>
                                         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                                            <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${(classesStats.connect.completed / membersStats.total) * 100}%` }}></div>
+                                            <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${membersStats.total > 0 ? (classesStats.connect.completed / membersStats.total) * 100 : 0}%` }}></div>
                                         </div>
                                     </div>
                                     {/* Clase Crecer */}
@@ -111,7 +116,7 @@ export default function Dashboard({ ministries, membersStats, classesStats, toda
                                             <span className="text-gray-500">{classesStats.grow.completed} Completadas / {classesStats.grow.pending} Pendientes</span>
                                         </div>
                                         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                                            <div className="bg-emerald-500 h-2.5 rounded-full" style={{ width: `${(classesStats.grow.completed / membersStats.total) * 100}%` }}></div>
+                                            <div className="bg-emerald-500 h-2.5 rounded-full" style={{ width: `${membersStats.total > 0 ? (classesStats.grow.completed / membersStats.total) * 100 : 0}%` }}></div>
                                         </div>
                                     </div>
                                     {/* Clase Capacitar */}
@@ -121,7 +126,7 @@ export default function Dashboard({ ministries, membersStats, classesStats, toda
                                             <span className="text-gray-500">{classesStats.equip.completed} Completadas / {classesStats.equip.pending} Pendientes</span>
                                         </div>
                                         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                                            <div className="bg-purple-600 h-2.5 rounded-full" style={{ width: `${(classesStats.equip.completed / membersStats.total) * 100}%` }}></div>
+                                            <div className="bg-purple-600 h-2.5 rounded-full" style={{ width: `${membersStats.total > 0 ? (classesStats.equip.completed / membersStats.total) * 100 : 0}%` }}></div>
                                         </div>
                                     </div>
                                 </div>

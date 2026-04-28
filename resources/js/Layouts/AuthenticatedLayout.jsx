@@ -17,8 +17,14 @@ import {
 import { cn } from '@/lib/utils';
 
 export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
+    const { auth, globalSettings } = usePage().props;
+    const user = auth.user;
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    const primaryColor = globalSettings?.primary_color || '#4f46e5';
+    const secondaryColor = globalSettings?.secondary_color || '#db2777';
+    const churchName = globalSettings?.church_name || 'Dash-Ichthys';
+    const logoPath = globalSettings?.logo_path;
 
     const navigation = [
         { name: 'Dashboard', href: route('dashboard'), icon: LayoutDashboard, active: route().current('dashboard') },
@@ -31,6 +37,26 @@ export default function AuthenticatedLayout({ header, children }) {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
+            {/* Inject Global Styles for Primary Color Overrides */}
+            <style dangerouslySetInnerHTML={{__html: `
+                :root {
+                    --primary-color: ${primaryColor};
+                    --secondary-color: ${secondaryColor};
+                }
+                .btn-primary {
+                    background-color: var(--primary-color) !important;
+                }
+                .btn-primary:hover {
+                    opacity: 0.9 !important;
+                }
+                .text-primary {
+                    color: var(--primary-color) !important;
+                }
+                .bg-primary {
+                    background-color: var(--primary-color) !important;
+                }
+            `}} />
+
             {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
                 <div
@@ -46,10 +72,17 @@ export default function AuthenticatedLayout({ header, children }) {
             )}>
                 <div className="flex flex-col h-full">
                     <div className="flex h-16 items-center px-6 border-b border-gray-100 dark:border-gray-700">
-                        <Link href="/" className="flex items-center gap-3">
-                            <ApplicationLogo className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
-                            <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                                Dash-Ichthys
+                        <Link href="/" className="flex items-center gap-3 overflow-hidden">
+                            {logoPath ? (
+                                <img src={logoPath} alt={churchName} className="h-8 w-8 object-contain flex-shrink-0" />
+                            ) : (
+                                <ApplicationLogo className="h-8 w-8 flex-shrink-0" style={{ color: primaryColor }} />
+                            )}
+                            <span 
+                                className="text-xl font-bold bg-clip-text text-transparent truncate"
+                                style={{ backgroundImage: `linear-gradient(to right, var(--primary-color), var(--secondary-color))` }}
+                            >
+                                {churchName}
                             </span>
                         </Link>
                         <button
@@ -67,17 +100,19 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <Link
                                     key={item.name}
                                     href={item.href}
+                                    style={item.active ? { backgroundColor: `${primaryColor}20`, color: primaryColor } : {}}
                                     className={cn(
                                         "group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
-                                        item.active
-                                            ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400"
-                                            : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700/50 dark:hover:text-white"
+                                        !item.active && "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700/50 dark:hover:text-white"
                                     )}
                                 >
-                                    <Icon className={cn(
-                                        "mr-3 h-5 w-5 flex-shrink-0 transition-colors",
-                                        item.active ? "text-indigo-600 dark:text-indigo-400" : "text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300"
-                                    )} />
+                                    <Icon 
+                                        className={cn(
+                                            "mr-3 h-5 w-5 flex-shrink-0 transition-colors",
+                                            !item.active && "text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300"
+                                        )} 
+                                        style={item.active ? { color: primaryColor } : {}}
+                                    />
                                     {item.name}
                                 </Link>
                             )
@@ -87,8 +122,11 @@ export default function AuthenticatedLayout({ header, children }) {
                     <div className="p-4 border-t border-gray-200 dark:border-gray-700">
                         <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700/50">
                             <div className="flex-shrink-0">
-                                <div className="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
-                                    <span className="text-indigo-700 dark:text-indigo-300 font-medium text-sm">
+                                <div 
+                                    className="h-8 w-8 rounded-full flex items-center justify-center"
+                                    style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}
+                                >
+                                    <span className="font-medium text-sm">
                                         {user.name.charAt(0).toUpperCase()}
                                     </span>
                                 </div>
@@ -135,11 +173,18 @@ export default function AuthenticatedLayout({ header, children }) {
                             >
                                 <Menu className="h-6 w-6" />
                             </button>
-                            <ApplicationLogo className="h-8 w-auto text-indigo-600" />
+                            {logoPath ? (
+                                <img src={logoPath} alt={churchName} className="h-8 w-auto object-contain flex-shrink-0" />
+                            ) : (
+                                <ApplicationLogo className="h-8 w-auto flex-shrink-0" style={{ color: primaryColor }} />
+                            )}
                         </div>
                         <div className="flex items-center">
-                            <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                                <span className="text-indigo-700 font-medium text-sm">
+                            <div 
+                                className="h-8 w-8 rounded-full flex items-center justify-center"
+                                style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}
+                            >
+                                <span className="font-medium text-sm">
                                     {user.name.charAt(0).toUpperCase()}
                                 </span>
                             </div>

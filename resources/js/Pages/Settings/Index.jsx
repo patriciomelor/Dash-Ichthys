@@ -24,6 +24,7 @@ export default function Index({ auth, settings, tags }) {
         primary_color: settings.primary_color || '#4f46e5',
         secondary_color: settings.secondary_color || '#db2777',
         is_dark_mode: settings.is_dark_mode || false,
+        logo: null,
     });
 
     useEffect(() => {
@@ -126,16 +127,30 @@ export default function Index({ auth, settings, tags }) {
                                     </div>
                                     
                                     <div className="col-span-1 md:col-span-2">
-                                        <InputLabel value="Logo de la Iglesia (Próximamente)" />
-                                        <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-xl bg-gray-50 dark:bg-gray-900/50">
-                                            <div className="space-y-1 text-center">
-                                                <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                                                <div className="flex text-sm text-gray-600 dark:text-gray-400 justify-center">
-                                                    <span className="relative font-medium text-indigo-600 dark:text-indigo-400">
-                                                        Subir un archivo
-                                                    </span>
+                                        <InputLabel value="Logo de la Iglesia" />
+                                        <div className="mt-1 flex items-center gap-6">
+                                            {/* Preview existing logo or uploaded file */}
+                                            {settings.logo_path && !data.logo && (
+                                                <div className="h-16 w-16 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                                                    <img src={settings.logo_path} alt="Logo actual" className="h-full w-full object-contain" />
                                                 </div>
-                                                <p className="text-xs text-gray-500">PNG, JPG hasta 2MB</p>
+                                            )}
+                                            {data.logo && (
+                                                <div className="h-16 w-16 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 relative">
+                                                    <img src={URL.createObjectURL(data.logo)} alt="Logo nuevo" className="h-full w-full object-contain" />
+                                                </div>
+                                            )}
+                                            
+                                            <div className="flex-1">
+                                                <input
+                                                    type="file"
+                                                    id="logo"
+                                                    className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400 cursor-pointer"
+                                                    accept="image/png, image/jpeg, image/svg+xml"
+                                                    onChange={(e) => setData('logo', e.target.files[0])}
+                                                />
+                                                <p className="mt-1 text-xs text-gray-500">PNG, JPG o SVG hasta 2MB. (Proporción recomendada: 1:1 o 3:1)</p>
+                                                <InputError className="mt-2" message={errors.logo} />
                                             </div>
                                         </div>
                                     </div>

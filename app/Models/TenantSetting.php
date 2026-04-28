@@ -10,6 +10,7 @@ class TenantSetting extends Model
         'church_name',
         'logo_path',
         'primary_color',
+        'secondary_color',
         'is_dark_mode',
         'address',
         'phone',

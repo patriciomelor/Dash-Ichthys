@@ -26,6 +26,7 @@ class TenantSettingController extends Controller
             'primary_color' => 'required|string|max:50',
             'secondary_color' => 'nullable|string|max:50',
             'is_dark_mode' => 'boolean',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
         ]);
 
         $settings = TenantSetting::first();
@@ -34,6 +35,12 @@ class TenantSettingController extends Controller
         }
 
         $settings->fill($request->only('church_name', 'primary_color', 'secondary_color', 'is_dark_mode'));
+
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('logos', 'public');
+            $settings->logo_path = '/storage/' . $path;
+        }
+
         $settings->save();
 
         return redirect()->back()->with('success', 'Configuración actualizada exitosamente.');
