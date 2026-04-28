@@ -70,4 +70,35 @@ class FormController extends Controller
             'form' => $form
         ]);
     }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'valid_until' => 'nullable|date',
+        ]);
+
+        $form = Form::findOrFail($id);
+        
+        $form->update([
+            'title' => $request->input('title'),
+            'description' => $request->input('description'),
+            'valid_until' => $request->input('valid_until'),
+        ]);
+
+        return redirect()->route('forms.show', $form->id)->with('success', 'Formulario actualizado con éxito.');
+    }
+
+    public function destroy($id)
+    {
+        $form = Form::findOrFail($id);
+        
+        // This will cascade delete fields and responses if DB is configured properly.
+        // But to be safe, we can delete them explicitly or let the Model/DB handle it.
+        // Assuming cascade on delete is set up in migrations.
+        $form->delete();
+
+        return redirect()->route('forms.index')->with('success', 'Formulario eliminado con éxito.');
+    }
 }

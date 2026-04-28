@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/forms', [\App\Http\Controllers\FormController::class, 'store'])->name('forms.store');
     Route::get('/forms/{id}', [\App\Http\Controllers\FormController::class, 'show'])->name('forms.show');
     Route::get('/forms/{id}/edit', [\App\Http\Controllers\FormController::class, 'edit'])->name('forms.edit');
+    Route::put('/forms/{id}', [\App\Http\Controllers\FormController::class, 'update'])->name('forms.update');
+    Route::delete('/forms/{id}', [\App\Http\Controllers\FormController::class, 'destroy'])->name('forms.destroy');
 
     Route::get('/ministries', [\App\Http\Controllers\MinistryController::class, 'index'])->name('ministries.index');
     Route::post('/ministries', [\App\Http\Controllers\MinistryController::class, 'store'])->name('ministries.store');
@@ -57,3 +59,20 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Temporary route for cPanel deployment
+Route::get('/setup-symlink', function () {
+    $targetFolder = storage_path('app/public');
+    $linkFolder = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/storage';
+    
+    if (file_exists($linkFolder) || is_link($linkFolder)) {
+        return 'El symlink ya existe en ' . $linkFolder . '. Ya puedes eliminar esta ruta.';
+    }
+    
+    try {
+        symlink($targetFolder, $linkFolder);
+        return 'Symlink creado con éxito en ' . $linkFolder . '. Ya puedes eliminar esta ruta por seguridad.';
+    } catch (\Exception $e) {
+        return 'Error al crear el symlink: ' . $e->getMessage();
+    }
+});
