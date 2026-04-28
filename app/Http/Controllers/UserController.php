@@ -29,7 +29,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', Rules\Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
             'role' => 'required|string|exists:roles,name'
         ]);
 
@@ -43,6 +43,7 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'Usuario creado exitosamente.');
     }
+
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -54,7 +55,7 @@ class UserController extends Controller
         ];
 
         if ($request->filled('password')) {
-            $rules['password'] = ['required', 'confirmed', Rules\Password::defaults()];
+            $rules['password'] = ['required', 'confirmed', Rules\Password::min(8)->letters()->mixedCase()->numbers()->symbols()];
         }
 
         $request->validate($rules);
