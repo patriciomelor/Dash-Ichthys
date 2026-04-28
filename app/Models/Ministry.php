@@ -10,6 +10,7 @@ class Ministry extends Model
         'name',
         'description',
         'color_hex',
+        'icon',
     ];
 
     public function members()

@@ -11,9 +11,16 @@ import {
     Clock, 
     GraduationCap 
 } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { cn } from '@/lib/utils';
+
+// Helper to safely render dynamic icons
+const DynamicIcon = ({ name, className }) => {
+    const IconComponent = LucideIcons[name] || LucideIcons.Building;
+    return <IconComponent className={className} />;
+};
 
 try {
     dayjs.extend(relativeTime.default || relativeTime);
@@ -151,7 +158,7 @@ export default function Dashboard({ ministries, membersStats, classesStats, toda
                                                 className="h-10 w-10 rounded-lg flex items-center justify-center bg-opacity-20 flex-shrink-0"
                                                 style={{ backgroundColor: `${ministry.color_hex || '#4f46e5'}30`, color: ministry.color_hex || '#4f46e5' }}
                                             >
-                                                <Building className="h-5 w-5" />
+                                                <DynamicIcon name={ministry.icon || 'Building'} className="h-5 w-5" />
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{ministry.name}</p>

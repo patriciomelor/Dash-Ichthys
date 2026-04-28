@@ -1,13 +1,15 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
+import * as LucideIcons from 'lucide-react';
 import { 
     Building, 
     Plus, 
     MoreVertical,
     Users,
     Settings,
-    X
+    X,
+    Check
 } from 'lucide-react';
 import Modal from '@/Components/Modal';
 import Dropdown from '@/Components/Dropdown';
@@ -18,6 +20,18 @@ import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import { cn } from '@/lib/utils';
 
+const AVAILABLE_ICONS = [
+    'Building', 'Music', 'Heart', 'Shield', 'BookOpen', 'Star', 'Sun', 'Target',
+    'Users', 'UsersRound', 'Mic', 'Radio', 'Video', 'Camera', 'GraduationCap', 
+    'Baby', 'Activity', 'Flame', 'Globe', 'Cross'
+];
+
+// Helper to safely render dynamic icons
+const DynamicIcon = ({ name, className }) => {
+    const IconComponent = LucideIcons[name] || LucideIcons.Building;
+    return <IconComponent className={className} />;
+};
+
 export default function Index({ auth, ministries }) {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
@@ -25,6 +39,7 @@ export default function Index({ auth, ministries }) {
         name: '',
         description: '',
         color: '#4f46e5',
+        icon: 'Building',
         id: null
     });
 
@@ -86,7 +101,7 @@ export default function Index({ auth, ministries }) {
                                         className="h-12 w-12 rounded-xl flex items-center justify-center bg-opacity-10 dark:bg-opacity-20"
                                         style={{ backgroundColor: `${ministry.color_hex}20`, color: ministry.color_hex }}
                                     >
-                                        <Building className="h-6 w-6" />
+                                        <DynamicIcon name={ministry.icon || 'Building'} className="h-6 w-6" />
                                     </div>
                                     <Dropdown>
                                         <Dropdown.Trigger>
@@ -105,6 +120,7 @@ export default function Index({ auth, ministries }) {
                                                         name: ministry.name,
                                                         description: ministry.description || '',
                                                         color: ministry.color_hex || '#4f46e5',
+                                                        icon: ministry.icon || 'Building',
                                                         id: ministry.id
                                                     });
                                                     setIsCreateModalOpen(true);
@@ -172,7 +188,7 @@ export default function Index({ auth, ministries }) {
                 <div className="p-6">
                     <div className="flex justify-between items-center mb-5">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                            Nuevo Ministerio
+                            {data.id ? 'Editar Ministerio' : 'Nuevo Ministerio'}
                         </h2>
                         <button onClick={closeModal} className="text-gray-400 hover:text-gray-500 transition-colors">
                             <X className="h-5 w-5" />
@@ -209,6 +225,29 @@ export default function Index({ auth, ministries }) {
                         </div>
 
                         <div>
+                            <InputLabel value="Icono del Ministerio" />
+                            <div className="mt-2 grid grid-cols-5 sm:grid-cols-10 gap-2">
+                                {AVAILABLE_ICONS.map(iconName => (
+                                    <button
+                                        key={iconName}
+                                        type="button"
+                                        onClick={() => setData('icon', iconName)}
+                                        className={cn(
+                                            "flex items-center justify-center p-2 rounded-lg border transition-all",
+                                            data.icon === iconName 
+                                                ? "border-indigo-600 bg-indigo-50 text-indigo-600 dark:bg-indigo-900/50 dark:border-indigo-400 dark:text-indigo-400" 
+                                                : "border-gray-200 bg-white text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+                                        )}
+                                        title={iconName}
+                                    >
+                                        <DynamicIcon name={iconName} className="h-5 w-5" />
+                                    </button>
+                                ))}
+                            </div>
+                            <InputError message={errors.icon} className="mt-2" />
+                        </div>
+
+                        <div>
                             <InputLabel htmlFor="color" value="Color Identificativo" />
                             <div className="flex items-center gap-3 mt-1">
                                 <input
@@ -232,7 +271,7 @@ export default function Index({ auth, ministries }) {
                         <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700 mt-6">
                             <SecondaryButton onClick={closeModal}>Cancelar</SecondaryButton>
                             <PrimaryButton disabled={processing}>
-                                Guardar Ministerio
+                                {data.id ? 'Guardar Cambios' : 'Guardar Ministerio'}
                             </PrimaryButton>
                         </div>
                     </form>

@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
+import * as LucideIcons from 'lucide-react';
 import { 
     Building, 
     ArrowLeft,
@@ -15,6 +16,12 @@ import Dropdown from '@/Components/Dropdown';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import Modal from '@/Components/Modal';
+
+// Helper to safely render dynamic icons
+const DynamicIcon = ({ name, className }) => {
+    const IconComponent = LucideIcons[name] || LucideIcons.Building;
+    return <IconComponent className={className} />;
+};
 
 export default function Show({ auth, ministry, availableMembers, tags }) {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -57,7 +64,7 @@ export default function Show({ auth, ministry, availableMembers, tags }) {
                             className="h-10 w-10 rounded-lg flex items-center justify-center bg-opacity-10 dark:bg-opacity-20"
                             style={{ backgroundColor: `${ministry.color_hex || '#4f46e5'}20`, color: ministry.color_hex || '#4f46e5' }}
                         >
-                            <Building className="h-5 w-5" />
+                            <DynamicIcon name={ministry.icon || 'Building'} className="h-5 w-5" />
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">

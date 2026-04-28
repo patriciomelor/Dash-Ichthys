@@ -22,12 +22,14 @@ class MinistryController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'color' => 'nullable|string|max:50',
+            'icon' => 'nullable|string|max:50',
         ]);
 
         Ministry::create([
             'name' => $request->name,
             'description' => $request->description,
             'color_hex' => $request->color,
+            'icon' => $request->icon,
         ]);
 
         return redirect()->route('ministries.index')->with('success', 'Ministerio creado exitosamente.');
@@ -39,6 +41,7 @@ class MinistryController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'color' => 'nullable|string|max:50',
+            'icon' => 'nullable|string|max:50',
         ]);
 
         $ministry = Ministry::findOrFail($id);
@@ -46,6 +49,7 @@ class MinistryController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'color_hex' => $request->color,
+            'icon' => $request->icon,
         ]);
 
         return redirect()->route('ministries.index')->with('success', 'Ministerio actualizado exitosamente.');
