@@ -118,54 +118,14 @@ export default function AuthenticatedLayout({ header, children }) {
                             )
                         })}
                     </nav>
-
-                    <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                        <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-                            <div className="flex-shrink-0">
-                                <div 
-                                    className="h-8 w-8 rounded-full flex items-center justify-center"
-                                    style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}
-                                >
-                                    <span className="font-medium text-sm">
-                                        {user.name.charAt(0).toUpperCase()}
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                                    {user.name}
-                                </p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                                    {user.email}
-                                </p>
-                            </div>
-                            <Dropdown>
-                                <Dropdown.Trigger>
-                                    <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                                        <Settings className="h-5 w-5" />
-                                    </button>
-                                </Dropdown.Trigger>
-                                <Dropdown.Content>
-                                    <Dropdown.Link href={route('profile.edit')} className="flex items-center gap-2">
-                                        <UserIcon className="h-4 w-4" />
-                                        <span>Perfil</span>
-                                    </Dropdown.Link>
-                                    <Dropdown.Link href={route('logout')} method="post" as="button" className="flex items-center gap-2 text-red-600 dark:text-red-400">
-                                        <LogOut className="h-4 w-4" />
-                                        <span>Cerrar Sesión</span>
-                                    </Dropdown.Link>
-                                </Dropdown.Content>
-                            </Dropdown>
-                        </div>
-                    </div>
                 </div>
             </aside>
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-                <header className="bg-white dark:bg-gray-800 shadow-sm lg:hidden">
+                <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-100 dark:border-gray-700">
                     <div className="flex items-center justify-between h-16 px-4 sm:px-6">
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 lg:hidden">
                             <button
                                 type="button"
                                 className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md p-1"
@@ -179,15 +139,44 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <ApplicationLogo className="h-8 w-auto flex-shrink-0" style={{ color: primaryColor }} />
                             )}
                         </div>
-                        <div className="flex items-center">
-                            <div 
-                                className="h-8 w-8 rounded-full flex items-center justify-center"
-                                style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}
-                            >
-                                <span className="font-medium text-sm">
-                                    {user.name.charAt(0).toUpperCase()}
-                                </span>
-                            </div>
+
+                        {/* Spacer for desktop to push user to the right */}
+                        <div className="hidden lg:block flex-1"></div>
+
+                        <div className="flex items-center gap-3">
+                            <Dropdown>
+                                <Dropdown.Trigger>
+                                    <button className="flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 p-1.5 rounded-lg transition-colors text-left">
+                                        <div 
+                                            className="h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0"
+                                            style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}
+                                        >
+                                            <span className="font-medium text-sm">
+                                                {user.name.charAt(0).toUpperCase()}
+                                            </span>
+                                        </div>
+                                        <div className="hidden md:block min-w-0 mr-2">
+                                            <p className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
+                                                {user.name}
+                                            </p>
+                                        </div>
+                                    </button>
+                                </Dropdown.Trigger>
+                                <Dropdown.Content align="right">
+                                    <div className="px-4 py-3 text-sm text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700">
+                                        <div>{user.name}</div>
+                                        <div className="font-medium truncate text-gray-500 dark:text-gray-400">{user.email}</div>
+                                    </div>
+                                    <Dropdown.Link href={route('profile.edit')} className="flex items-center gap-2">
+                                        <UserIcon className="h-4 w-4" />
+                                        <span>Mi Perfil</span>
+                                    </Dropdown.Link>
+                                    <Dropdown.Link href={route('logout')} method="post" as="button" className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                                        <LogOut className="h-4 w-4" />
+                                        <span>Cerrar Sesión</span>
+                                    </Dropdown.Link>
+                                </Dropdown.Content>
+                            </Dropdown>
                         </div>
                     </div>
                 </header>
