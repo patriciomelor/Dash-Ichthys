@@ -217,7 +217,7 @@ export default function Index({ auth, members, tags }) {
                                                         <Dropdown.Link href={`/members/${member.id}`}>
                                                             Ver Perfil
                                                         </Dropdown.Link>
-                                                        <Dropdown.Link href="#" as="button" method="delete" className="text-red-600 hover:text-red-700">
+                                                        <Dropdown.Link href={`/members/${member.id}`} as="button" method="delete" className="text-red-600 hover:text-red-700">
                                                             Eliminar
                                                         </Dropdown.Link>
                                                     </Dropdown.Content>

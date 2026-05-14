@@ -101,6 +101,14 @@ class MemberController extends Controller
         return redirect()->back()->with('success', 'Perfil actualizado correctamente.');
     }
 
+    public function destroy($id)
+    {
+        $member = Member::findOrFail($id);
+        $member->delete();
+
+        return redirect()->back()->with('success', 'Miembro eliminado correctamente.');
+    }
+
     public function exportExcel()
     {
         return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\MembersExport, 'miembros_' . date('Y-m-d') . '.xlsx');

@@ -6,7 +6,10 @@ import {
     UserPlus, 
     MoreVertical,
     ShieldCheck,
-    X
+    X,
+    Eye,
+    EyeOff,
+    Check
 } from 'lucide-react';
 import Modal from '@/Components/Modal';
 import Dropdown from '@/Components/Dropdown';
@@ -19,8 +22,21 @@ import { cn } from '@/lib/utils';
 
 export default function Index({ auth, users, roles, tags }) {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const passwordConditions = [
+        { id: 'length', text: 'Mínimo 8 caracteres', regex: /.{8,}/ },
+        { id: 'uppercase', text: 'Al menos una mayúscula', regex: /[A-Z]/ },
+        { id: 'lowercase', text: 'Al menos una minúscula', regex: /[a-z]/ },
+        { id: 'number', text: 'Al menos un número', regex: /[0-9]/ },
+        { id: 'special', text: 'Un símbolo especial (@$!%*?&...)', regex: /[^A-Za-z0-9]/ },
+    ];
+
+    const checkCondition = (pass, regex) => regex.test(pass || '');
+
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
         name: '',
         email: '',
         password: '',
@@ -38,9 +54,42 @@ export default function Index({ auth, users, roles, tags }) {
         });
     };
 
+    const handleEditSubmit = (e) => {
+        e.preventDefault();
+        put(route('users.update', editingUser.id), {
+            onSuccess: () => {
+                closeEditModal();
+                router.reload();
+            }
+        });
+    };
+
+    const openEditModal = (user) => {
+        setEditingUser(user);
+        setData({
+            name: user.name,
+            email: user.email,
+            password: '',
+            password_confirmation: '',
+            role: user.roles && user.roles.length > 0 ? user.roles[0].name : 'colaborador'
+        });
+        clearErrors();
+        setIsEditModalOpen(true);
+    };
+
     const closeModal = () => {
         setIsCreateModalOpen(false);
+        setShowPassword(false);
         reset();
+        clearErrors();
+    };
+
+    const closeEditModal = () => {
+        setIsEditModalOpen(false);
+        setEditingUser(null);
+        setShowPassword(false);
+        reset();
+        clearErrors();
     };
 
     return (
@@ -140,10 +189,14 @@ export default function Index({ auth, users, roles, tags }) {
                                                 </Dropdown.Trigger>
 
                                                 <Dropdown.Content align="right" width="48">
-                                                    <Dropdown.Link href="#" as="button">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => openEditModal(user)}
+                                                        className="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none dark:text-gray-300 dark:hover:bg-gray-800 dark:focus:bg-gray-800"
+                                                    >
                                                         Editar Usuario
-                                                    </Dropdown.Link>
-                                                    <Dropdown.Link href="#" as="button" method="delete" className="text-red-600 hover:text-red-700">
+                                                    </button>
+                                                    <Dropdown.Link href={route('users.destroy', user.id)} as="button" method="delete" className="text-red-600 hover:text-red-700">
                                                         Eliminar
                                                     </Dropdown.Link>
                                                 </Dropdown.Content>
@@ -219,37 +272,202 @@ export default function Index({ auth, users, roles, tags }) {
                             <InputError message={errors.role} className="mt-2" />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <InputLabel htmlFor="password" value="Contraseña" />
-                                <TextInput
-                                    id="password"
-                                    type="password"
-                                    className="mt-1 block w-full"
-                                    value={data.password}
-                                    onChange={(e) => setData('password', e.target.value)}
-                                    required
-                                />
+                                <div className="relative mt-1">
+                                    <TextInput
+                                        id="password"
+                                        type={showPassword ? "text" : "password"}
+                                        className="block w-full pr-10"
+                                        value={data.password}
+                                        onChange={(e) => setData('password', e.target.value)}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                                    >
+                                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                    </button>
+                                </div>
                                 <InputError message={errors.password} className="mt-2" />
                             </div>
 
                             <div>
                                 <InputLabel htmlFor="password_confirmation" value="Confirmar Contraseña" />
-                                <TextInput
-                                    id="password_confirmation"
-                                    type="password"
-                                    className="mt-1 block w-full"
-                                    value={data.password_confirmation}
-                                    onChange={(e) => setData('password_confirmation', e.target.value)}
-                                    required
-                                />
+                                <div className="relative mt-1">
+                                    <TextInput
+                                        id="password_confirmation"
+                                        type={showPassword ? "text" : "password"}
+                                        className="block w-full pr-10"
+                                        value={data.password_confirmation}
+                                        onChange={(e) => setData('password_confirmation', e.target.value)}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                                    >
+                                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                    </button>
+                                </div>
                             </div>
                         </div>
+
+                        {data.password && (
+                            <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700">
+                                <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Requisitos de la contraseña:</p>
+                                <div className="space-y-1">
+                                    {passwordConditions.map(cond => {
+                                        const isValid = checkCondition(data.password, cond.regex);
+                                        return (
+                                            <div key={cond.id} className={`flex items-center text-xs transition-colors duration-200 ${isValid ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+                                                {isValid ? <Check className="h-3 w-3 mr-1.5 flex-shrink-0" /> : <X className="h-3 w-3 mr-1.5 flex-shrink-0" />}
+                                                {cond.text}
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        )}
 
                         <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700 mt-6">
                             <SecondaryButton onClick={closeModal}>Cancelar</SecondaryButton>
                             <PrimaryButton disabled={processing}>
                                 Crear Usuario
+                            </PrimaryButton>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
+
+            {/* Edit Modal */}
+            <Modal show={isEditModalOpen} onClose={closeEditModal} maxWidth="md">
+                <div className="p-6">
+                    <div className="flex justify-between items-center mb-5">
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                            <Users className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                            Editar Usuario
+                        </h2>
+                        <button onClick={closeEditModal} className="text-gray-400 hover:text-gray-500 transition-colors">
+                            <X className="h-5 w-5" />
+                        </button>
+                    </div>
+
+                    <form onSubmit={handleEditSubmit} className="space-y-4">
+                        <div>
+                            <InputLabel htmlFor="edit_name" value="Nombre Completo" />
+                            <TextInput
+                                id="edit_name"
+                                type="text"
+                                className="mt-1 block w-full"
+                                value={data.name}
+                                onChange={(e) => setData('name', e.target.value)}
+                                required
+                            />
+                            <InputError message={errors.name} className="mt-2" />
+                        </div>
+
+                        <div>
+                            <InputLabel htmlFor="edit_email" value="Correo Electrónico" />
+                            <TextInput
+                                id="edit_email"
+                                type="email"
+                                className="mt-1 block w-full"
+                                value={data.email}
+                                onChange={(e) => setData('email', e.target.value)}
+                                required
+                            />
+                            <InputError message={errors.email} className="mt-2" />
+                        </div>
+
+                        <div>
+                            <InputLabel htmlFor="edit_role" value="Rol en el Sistema" />
+                            <select
+                                id="edit_role"
+                                className="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm uppercase text-sm"
+                                value={data.role}
+                                onChange={(e) => setData('role', e.target.value)}
+                            >
+                                {roles.map(role => (
+                                    <option key={role.id} value={role.name}>{role.name}</option>
+                                ))}
+                            </select>
+                            <InputError message={errors.role} className="mt-2" />
+                        </div>
+
+                        <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800/50 mt-4">
+                            <p className="text-xs text-yellow-800 dark:text-yellow-300 font-medium mb-3">
+                                Deja los campos de contraseña en blanco si no deseas cambiarla.
+                            </p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <InputLabel htmlFor="edit_password" value="Nueva Contraseña" />
+                                    <div className="relative mt-1">
+                                        <TextInput
+                                            id="edit_password"
+                                            type={showPassword ? "text" : "password"}
+                                            className="block w-full pr-10"
+                                            value={data.password}
+                                            onChange={(e) => setData('password', e.target.value)}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                                        >
+                                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                        </button>
+                                    </div>
+                                    <InputError message={errors.password} className="mt-2" />
+                                </div>
+
+                                <div>
+                                    <InputLabel htmlFor="edit_password_confirmation" value="Confirmar Nueva" />
+                                    <div className="relative mt-1">
+                                        <TextInput
+                                            id="edit_password_confirmation"
+                                            type={showPassword ? "text" : "password"}
+                                            className="block w-full pr-10"
+                                            value={data.password_confirmation}
+                                            onChange={(e) => setData('password_confirmation', e.target.value)}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                                        >
+                                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {data.password && (
+                                <div className="mt-3 bg-white dark:bg-gray-800 p-3 rounded border border-gray-100 dark:border-gray-700">
+                                    <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Requisitos de la contraseña:</p>
+                                    <div className="space-y-1">
+                                        {passwordConditions.map(cond => {
+                                            const isValid = checkCondition(data.password, cond.regex);
+                                            return (
+                                                <div key={cond.id} className={`flex items-center text-xs transition-colors duration-200 ${isValid ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
+                                                    {isValid ? <Check className="h-3 w-3 mr-1.5 flex-shrink-0" /> : <X className="h-3 w-3 mr-1.5 flex-shrink-0" />}
+                                                    {cond.text}
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700 mt-6">
+                            <SecondaryButton onClick={closeEditModal}>Cancelar</SecondaryButton>
+                            <PrimaryButton disabled={processing}>
+                                Guardar Cambios
                             </PrimaryButton>
                         </div>
                     </form>
